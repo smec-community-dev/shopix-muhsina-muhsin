@@ -16,7 +16,7 @@
             <h1 class="text-lg font-bold">Shopping Cart</h1>
             <div class="flex items-center gap-2">
                 <span class="material-icons">local_mall</span>
-                <span class="font-bold">{{ cart.items.count }} Items</span>
+                <span class="font-bold">{{ cart_items.count }} Items</span>
             </div>
         </div>
     </header>
@@ -29,7 +29,7 @@
                     <h2 class="font-black text-xl">Items in your cart</h2>
                 </div>
 
-                {% for item in cart.items.all %}
+                {% for item in cart_items %}
                 <div class="p-6 flex flex-col sm:flex-row items-center gap-6 border-b border-gray-100 hover:bg-gray-50/30 transition-colors">
                     <div class="w-24 h-24 bg-gray-100 rounded-lg flex-shrink-0">
                         <img src="{{ item.variant.product.image.url }}" class="w-full h-full object-contain">
@@ -42,14 +42,14 @@
                     </div>
 
                     <div class="flex items-center border border-gray-300 rounded-lg bg-white">
-                        <a href="{% url 'update_cart' item.id 'decrease' %}" class="px-3 py-1 hover:text-[#A04747] font-bold">-</a>
+                        <a href="{% url 'update_quantity' item.id 'decrease' %}" class="px-3 py-1 hover:text-[#A04747] font-bold">-</a>
                         <span class="px-4 py-1 border-x border-gray-300 font-black text-[#343131]">{{ item.quantity }}</span>
-                        <a href="{% url 'update_cart' item.id 'increase' %}" class="px-3 py-1 hover:text-[#A04747] font-bold">+</a>
+                        <a href="{% url 'update_quantity' item.id 'increase' %}" class="px-3 py-1 hover:text-[#A04747] font-bold">+</a>
                     </div>
 
                     <div class="text-right sm:w-32">
                         <p class="text-lg font-black text-[#343131]">${{ item.price_at_time }}</p>
-                        <a href="{% url 'remove_from_cart' item.id %}" class="text-xs text-red-500 font-bold hover:underline">Remove</a>
+                        <a href="{% url 'remove_item' item.id %}" class="text-xs text-red-500 font-bold hover:underline">Remove</a>
                     </div>
                 </div>
                 {% empty %}
@@ -69,11 +69,11 @@
                 <div class="space-y-4">
                     <div class="flex justify-between text-gray-300">
                         <span>Subtotal</span>
-                        <span class="font-bold text-white">${{ subtotal }}</span>
+                        <span class="font-bold text-white">${{ total_amount }}</span>
                     </div>
                     <div class="flex justify-between text-gray-300">
                         <span>Tax (Estimated)</span>
-                        <span class="font-bold text-white">${{ tax }}</span>
+                        <span class="font-bold text-white">$0</span>
                     </div>
                     <div class="flex justify-between text-gray-300">
                         <span>Shipping</span>
@@ -83,7 +83,7 @@
                     <div class="border-t border-gray-600 pt-4 mt-4">
                         <div class="flex justify-between text-2xl font-black">
                             <span>Total</span>
-                            <span class="text-[#EEDF7A]">${{ grand_total }}</span>
+                            <span class="text-[#EEDF7A]">${{ total_amount }}</span>
                         </div>
                     </div>
                 </div>
@@ -100,4 +100,4 @@
     </main>
 
 </body>
-</html>
+</html> 

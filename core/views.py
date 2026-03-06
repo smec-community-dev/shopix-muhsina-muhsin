@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 
-from seller.models import SellerProfile
+from seller.models import Product, SellerProfile
 
 User = get_user_model()
 
@@ -121,8 +121,10 @@ def logout_view(request):
 
 
 def home_view(request):
-    # product=product.objects.filter(is_active=True)
+    products = Product.objects.all()
+    
+
     user=request.user
     if user.is_authenticated:
-        return render(request, 'core_templates/homepage.html')
-    return render(request, 'core_templates/homepage.html')
+        return render(request, 'core_templates/homepage.html', { 'products' : products })
+    return render(request, 'core_templates/homepage.html', { 'products' : products })
