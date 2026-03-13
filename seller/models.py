@@ -15,7 +15,15 @@ class SellerProfile(models.Model):
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+
 class Product(models.Model):
+
+    STATUS_CHOICES = (
+        ('ACTIVE', 'Active'),
+        ('INACTIVE', 'Inactive'),
+    )
+
     seller = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, related_name="products")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name="products")
     name = models.CharField(max_length=255)
@@ -24,12 +32,30 @@ class Product(models.Model):
     brand = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
     model_number = models.CharField(max_length=100)
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='ACTIVE'
+    )
+
     is_cancellable = models.BooleanField(default=True)
     is_returnable = models.BooleanField(default=True)
     return_days = models.IntegerField(default=7)
-    approval_status = models.CharField(max_length=20, choices=(('PENDING', 'Pending'), ('APPROVED', 'Approved'), ('REJECTED', 'Rejected')), default='PENDING')
+
+    approval_status = models.CharField(
+        max_length=20,
+        choices=(
+            ('PENDING', 'Pending'),
+            ('APPROVED', 'Approved'),
+            ('REJECTED', 'Rejected')
+        ),
+        default='PENDING'
+    )
+
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)

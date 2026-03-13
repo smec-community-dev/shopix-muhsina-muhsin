@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
+
         :root {
             --color-dark: #343131;
             --color-red: #A04747;
@@ -25,8 +25,14 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         .glass-effect {
             background: rgba(255, 255, 255, 0.8);
@@ -54,9 +60,10 @@
 
     <header class="sticky top-0 z-[100] glass-effect border-b border-gray-100">
         <div class="max-w-[1600px] mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-8">
-            
+
             <a href="/" class="flex items-center gap-2 group flex-shrink-0">
-                <div class="w-12 h-12 bg-gradient-to-br from-[#A04747] to-[#D8A25E] rounded-xl flex items-center justify-center overflow-hidden shadow-lg shadow-[#A04747]/20 group-hover:scale-105 transition-transform duration-500">
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-[#A04747] to-[#D8A25E] rounded-xl flex items-center justify-center overflow-hidden shadow-lg shadow-[#A04747]/20 group-hover:scale-105 transition-transform duration-500">
                     <img src="{% static 'images/shopix_logo.jpeg' %}" class="w-full h-full object-cover">
                 </div>
                 <span class="text-2xl font-black tracking-tighter hidden sm:block">
@@ -66,8 +73,9 @@
 
             <div class="flex-1 max-w-3xl hidden md:block">
                 <form class="relative group">
-                    <span class="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#A04747] transition-colors">search</span>
-                    <input type="text" placeholder="Search for luxury brands, electronics, and more..." 
+                    <span
+                        class="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#A04747] transition-colors">search</span>
+                    <input type="text" placeholder="Search for luxury brands, electronics, and more..."
                         class="w-full bg-gray-100/80 border-2 border-transparent rounded-2xl py-3 pl-12 pr-4 text-sm font-medium focus:bg-white focus:border-[#A04747]/10 focus:ring-4 focus:ring-[#A04747]/5 transition-all outline-none">
                 </form>
             </div>
@@ -76,36 +84,45 @@
                 {% if user.is_authenticated %}
                 <div class="relative group">
                     <button class="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-xl transition-colors">
-                        <div class="w-8 h-8 rounded-lg bg-[#A04747] text-white flex items-center justify-center text-xs font-bold">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-[#A04747] text-white flex items-center justify-center text-xs font-bold">
                             {{ user.username|slice:":1"|upper }}
                         </div>
                         <span class="text-sm font-bold hidden lg:block">{{ user.username }}</span>
                     </button>
-                    <div class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-[110]">
+                    <div
+                        class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-[110]">
                         <div class="p-2 space-y-1">
-                            <a href="{% url 'profile' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 font-bold text-sm text-gray-600 hover:text-[#A04747] transition-colors">
+                            <a href="{% url 'profile' %}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 font-bold text-sm text-gray-600 hover:text-[#A04747] transition-colors">
                                 <span class="material-icons-round text-lg">person_outline</span> Profile
                             </a>
-                            <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 font-bold text-sm text-red-500 transition-colors">
+                            <a href="{% url 'logout' %}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 font-bold text-sm text-red-500 transition-colors">
                                 <span class="material-icons-round text-lg">logout</span> Logout
                             </a>
                         </div>
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'login' %}" class="text-sm font-extrabold hover:text-[#A04747] transition-colors px-4 py-2">Sign In</a>
+                <a href="{% url 'login' %}"
+                    class="text-sm font-extrabold hover:text-[#A04747] transition-colors px-4 py-2">Sign In</a>
                 {% endif %}
 
-                <a href="#" class="relative p-2.5 bg-gray-100 hover:bg-[#343131] hover:text-white rounded-2xl transition-all duration-300">
+                <a href="#"
+                    class="relative p-2.5 bg-gray-100 hover:bg-[#343131] hover:text-white rounded-2xl transition-all duration-300">
                     <span class="material-icons-round text-xl">shopping_bag</span>
-                    <span class="absolute -top-1 -right-1 bg-[#A04747] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                    <span
+                        class="absolute -top-1 -right-1 bg-[#A04747] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
                 </a>
             </div>
         </div>
 
         <div class="bg-white/50 border-t border-gray-100 overflow-x-auto no-scrollbar">
-            <div class="max-w-[1600px] mx-auto px-8 py-3 flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-gray-500 whitespace-nowrap">
-                <a href="#" class="flex items-center gap-1 text-[#A04747]"><span class="material-icons-round text-lg">menu</span> Categories</a>
+            <div
+                class="max-w-[1600px] mx-auto px-8 py-3 flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-gray-500 whitespace-nowrap">
+                <a href="#" class="flex items-center gap-1 text-[#A04747]"><span
+                        class="material-icons-round text-lg">menu</span> Categories</a>
                 <a href="#" class="hover:text-[#343131] transition-colors">Today's Deals</a>
                 <a href="#" class="hover:text-[#343131] transition-colors">Smartphones</a>
                 <a href="#" class="hover:text-[#343131] transition-colors">Fashion House</a>
@@ -116,29 +133,35 @@
     </header>
 
     <main class="max-w-[1600px] mx-auto w-full px-4 md:px-8 py-8 space-y-12">
-        
-        <section class="relative h-[300px] md:h-[500px] rounded-[2.5rem] overflow-hidden hero-gradient shadow-2xl flex items-center">
+
+        <section
+            class="relative h-[300px] md:h-[500px] rounded-[2.5rem] overflow-hidden hero-gradient shadow-2xl flex items-center">
             <div class="absolute top-0 right-0 w-1/2 h-full opacity-30">
                 <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <polygon fill="#A04747" points="100,0 100,100 20,100" />
                 </svg>
             </div>
-            
+
             <div class="relative z-10 px-8 md:px-20 max-w-3xl">
-                <span class="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[#EEDF7A] text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[#EEDF7A] text-[10px] font-black uppercase tracking-[0.2em] mb-6">
                     Summer Collection 2026
                 </span>
                 <h1 class="text-4xl md:text-7xl font-black text-white leading-tight mb-6">
-                    The Big <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D8A25E] to-[#EEDF7A]">Shopix</span> Sale
+                    The Big <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#D8A25E] to-[#EEDF7A]">Shopix</span>
+                    Sale
                 </h1>
                 <p class="text-gray-300 text-lg md:text-xl font-medium mb-10 max-w-lg leading-relaxed">
                     Elevate your lifestyle with up to 60% off on premium global brands.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="#" class="px-10 py-4 bg-[#A04747] text-white font-bold rounded-2xl hover:bg-[#8c3d3d] transition-all hover:shadow-xl hover:shadow-[#A04747]/30 hover:-translate-y-1">
+                    <a href="#"
+                        class="px-10 py-4 bg-[#A04747] text-white font-bold rounded-2xl hover:bg-[#8c3d3d] transition-all hover:shadow-xl hover:shadow-[#A04747]/30 hover:-translate-y-1">
                         Explore Collection
                     </a>
-                    <a href="#" class="px-10 py-4 bg-white/10 text-white backdrop-blur-md border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
+                    <a href="#"
+                        class="px-10 py-4 bg-white/10 text-white backdrop-blur-md border border-white/20 font-bold rounded-2xl hover:bg-white/20 transition-all">
                         View Deals
                     </a>
                 </div>
@@ -152,27 +175,36 @@
                     <p class="text-gray-400 font-bold text-sm mt-1 uppercase tracking-widest">Limited time offers</p>
                 </div>
                 <a href="#" class="group flex items-center gap-2 text-[#A04747] font-black text-sm transition-all">
-                    VIEW ALL <span class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">east</span>
+                    VIEW ALL <span
+                        class="material-icons-round text-lg group-hover:translate-x-1 transition-transform">east</span>
                 </a>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                <div class="group bg-white rounded-[2rem] p-4 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.1)] transition-all duration-500 cursor-pointer">
-                    <div class="relative aspect-[4/5] bg-gray-50 rounded-[1.5rem] mb-6 overflow-hidden flex items-center justify-center">
-                        <div class="absolute top-3 left-3 z-10 bg-[#A04747] text-white text-[9px] font-black px-2.5 py-1.5 rounded-xl shadow-lg">
+                <div
+                    class="group bg-white rounded-[2rem] p-4 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.1)] transition-all duration-500 cursor-pointer">
+                    <div
+                        class="relative aspect-[4/5] bg-gray-50 rounded-[1.5rem] mb-6 overflow-hidden flex items-center justify-center">
+                        <div
+                            class="absolute top-3 left-3 z-10 bg-[#A04747] text-white text-[9px] font-black px-2.5 py-1.5 rounded-xl shadow-lg">
                             -20% OFF
                         </div>
-                        
-                        <span class="material-icons-round text-6xl text-gray-200 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">smartphone</span>
-                        
-                        <button class="absolute bottom-3 inset-x-3 bg-[#343131] text-white py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-black">
+
+                        <span
+                            class="material-icons-round text-6xl text-gray-200 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">smartphone</span>
+
+                        <button
+                            class="absolute bottom-3 inset-x-3 bg-[#343131] text-white py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-black">
                             Quick Add
                         </button>
                     </div>
 
                     <div class="px-2">
-                        <p class="text-[9px] font-black uppercase tracking-[0.15em] text-[#D8A25E] mb-2">Premium Tech</p>
-                        <h3 class="font-extrabold text-[#343131] text-sm mb-3 line-clamp-1 group-hover:text-[#A04747] transition-colors">Latest Smartphones Pro Max</h3>
+                        <p class="text-[9px] font-black uppercase tracking-[0.15em] text-[#D8A25E] mb-2">Premium Tech
+                        </p>
+                        <h3
+                            class="font-extrabold text-[#343131] text-sm mb-3 line-clamp-1 group-hover:text-[#A04747] transition-colors">
+                            Latest Smartphones Pro Max</h3>
                         <div class="flex items-baseline gap-2">
                             <span class="text-lg font-black text-[#343131]">₹79,999</span>
                             <span class="text-xs text-gray-400 line-through font-bold">₹99,999</span>
@@ -181,8 +213,10 @@
                 </div>
 
                 {% for i in "12345" %}
-                <div class="group bg-white rounded-[2rem] p-4 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.1)] transition-all duration-500 cursor-pointer opacity-40">
-                    <div class="relative aspect-[4/5] bg-gray-50 rounded-[1.5rem] mb-6 overflow-hidden flex items-center justify-center">
+                <div
+                    class="group bg-white rounded-[2rem] p-4 border border-gray-100 hover:border-transparent hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.1)] transition-all duration-500 cursor-pointer opacity-40">
+                    <div
+                        class="relative aspect-[4/5] bg-gray-50 rounded-[1.5rem] mb-6 overflow-hidden flex items-center justify-center">
                         <span class="material-icons-round text-6xl text-gray-100">inventory_2</span>
                     </div>
                     <div class="h-4 w-1/2 bg-gray-100 rounded-full mb-3"></div>
@@ -198,8 +232,12 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <h3 class="text-xl font-bold text-[#343131] mb-4">Upgrade your home</h3>
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80" alt="Furniture" class="w-full h-28 object-cover rounded-md shadow-sm hover:opacity-90 cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80" alt="Decor" class="w-full h-28 object-cover rounded-md shadow-sm hover:opacity-90 cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80"
+                        alt="Furniture"
+                        class="w-full h-28 object-cover rounded-md shadow-sm hover:opacity-90 cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80"
+                        alt="Decor"
+                        class="w-full h-28 object-cover rounded-md shadow-sm hover:opacity-90 cursor-pointer">
                 </div>
                 <a href="#" class="text-[#A04747] font-semibold hover:underline text-sm">Shop now</a>
             </div>
@@ -207,7 +245,9 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <h3 class="text-xl font-bold text-[#343131] mb-4">Men's Fashion</h3>
                 <div class="h-[240px] rounded-md mb-4 overflow-hidden shadow-sm cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=600&q=80" alt="Men's Fashion" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=600&q=80"
+                        alt="Men's Fashion"
+                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                 </div>
                 <a href="#" class="text-[#A04747] font-semibold hover:underline text-sm">Explore category</a>
             </div>
@@ -215,7 +255,9 @@
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <h3 class="text-xl font-bold text-[#343131] mb-4">Electronics</h3>
                 <div class="h-[240px] rounded-md mb-4 overflow-hidden shadow-sm cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=600&q=80" alt="Electronics" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=600&q=80"
+                        alt="Electronics"
+                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                 </div>
                 <a href="#" class="text-[#A04747] font-semibold hover:underline text-sm">See more</a>
             </div>
@@ -223,10 +265,11 @@
     </main>
 
     <footer class="bg-[#343131] text-white mt-20">
-        <div class="bg-white/5 hover:bg-white/10 text-center py-6 cursor-pointer transition-colors border-b border-white/5" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <div class="bg-white/5 hover:bg-white/10 text-center py-6 cursor-pointer transition-colors border-b border-white/5"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
             <span class="text-xs font-black uppercase tracking-[0.3em] text-gray-400">Back to Top</span>
         </div>
-        
+
         <div class="max-w-[1600px] mx-auto px-8 py-20 grid grid-cols-1 md:grid-cols-4 gap-16">
             <div class="space-y-6">
                 <div class="flex items-center gap-2">
@@ -234,7 +277,8 @@
                     <span class="text-2xl font-black tracking-tighter italic">Shopix.</span>
                 </div>
                 <p class="text-gray-400 text-sm leading-relaxed font-medium">
-                    The destination for premium brands and curated lifestyle products. Experience the future of online shopping.
+                    The destination for premium brands and curated lifestyle products. Experience the future of online
+                    shopping.
                 </p>
             </div>
 
@@ -250,7 +294,8 @@
             <div>
                 <h4 class="font-black text-[#EEDF7A] text-xs uppercase tracking-widest mb-8">Merchant Central</h4>
                 <ul class="space-y-4 text-sm text-gray-400 font-bold">
-                    <li><a href="{% url 'sellerregister' %}" class="hover:text-white transition-colors">Sell on Shopix</a></li>
+                    <li><a href="{% url 'sellerregister' %}" class="hover:text-white transition-colors">Sell on
+                            Shopix</a></li>
                     <li><a href="#" class="hover:text-white transition-colors">Fulfillment Policy</a></li>
                     <li><a href="#" class="hover:text-white transition-colors">Seller Dashboard</a></li>
                 </ul>
@@ -260,7 +305,8 @@
                 <h4 class="font-black text-[#EEDF7A] text-xs uppercase tracking-widest mb-8">Newsletter</h4>
                 <p class="text-gray-400 text-xs mb-6 font-medium">Get early access to drops and sales.</p>
                 <div class="relative">
-                    <input type="email" placeholder="email@address.com" class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-4 pr-12 text-sm focus:outline-none focus:border-[#A04747] transition-all">
+                    <input type="email" placeholder="email@address.com"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-4 pr-12 text-sm focus:outline-none focus:border-[#A04747] transition-all">
                     <button class="absolute right-2 top-2 bottom-2 px-4 bg-[#A04747] rounded-lg">
                         <span class="material-icons-round text-sm">east</span>
                     </button>
@@ -277,4 +323,5 @@
 
 
 </body>
+
 </html>

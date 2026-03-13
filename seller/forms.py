@@ -14,6 +14,7 @@ class ProductForm(forms.ModelForm):
             "model_number",
             "subcategory",
             "description",
+            "status",   # added
             "is_cancellable",
             "is_returnable",
             "return_days",
@@ -39,6 +40,9 @@ class ProductForm(forms.ModelForm):
                 "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary",
                 "rows": 4
             }),
+            "status": forms.Select(attrs={     # added
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
             "return_days": forms.NumberInput(attrs={
                 "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
             }),
@@ -63,6 +67,52 @@ ProductImageFormSet = inlineformset_factory(
     ProductImage,
     form=ProductImageForm,
     fields=["image"],
-    extra=4,          # shows 4 upload boxes
+    extra=4,
     can_delete=True
 )
+
+
+class EditProductForm(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = [
+            "name",
+            "brand",
+            "price",
+            "model_number",
+            "subcategory",
+            "description",
+            "status",   # added
+            "is_cancellable",
+            "is_returnable",
+            "return_days",
+        ]
+
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+            "brand": forms.TextInput(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+            "price": forms.NumberInput(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+            "model_number": forms.TextInput(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+            "subcategory": forms.Select(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+            "description": forms.Textarea(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary",
+                "rows": 4
+            }),
+            "status": forms.Select(attrs={   # added
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+            "return_days": forms.NumberInput(attrs={
+                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
+            }),
+        }
