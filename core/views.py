@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
+from customer.models import *
 
-from seller.models import Product, SellerProfile
+from seller.models import Product, SellerProfile, ProductVariant
 
 User = get_user_model()
 
@@ -121,10 +123,31 @@ def logout_view(request):
 
 
 def home_view(request):
-    products = Product.objects.all()
-    
+    products = ProductVariant.objects.all()
+    user_wishlist_ids = [] # Default to empty for guests
 
-    user=request.user
-    if user.is_authenticated:
-        return render(request, 'core_templates/homepage.html', { 'products' : products })
-    return render(request, 'core_templates/homepage.html', { 'products' : products })
+    if request.user.is_authenticated:
+        # We look through WishlistItem, filtering by the user linked to the Wishlist
+        user_wishlist_ids = WishlistItem.objects.filter(
+            wishlist__user=request.user
+        ).values_list('variant_id', flat=True)
+
+    context = {
+        'products': products,
+        'user_wishlist_ids': list(user_wishlist_ids), # Pass IDs to the template
+    }
+    
+    return render(request, 'core_templates/homepage.html', context)
+
+
+def single_variant_view(request, id):
+    """Render HTML for a single product variant."""
+    variant = get_object_or_404(
+        ProductVariant.objects.select_related('product__seller', 'product__subcategory')
+                              .prefetch_related('product__images', 'images'),
+        id=id
+    )
+    context = {
+        'variant': variant,
+    }
+    return render(request, 'customer_templates/single_fetch.html', context)

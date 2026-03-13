@@ -1,9 +1,10 @@
+import uuid
 from django.db import models
-from core.models import User, SubCategory
 from django.utils.text import slugify
 
 class SellerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="seller_profile")
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField("core.User", on_delete=models.CASCADE, related_name="seller_profile")
     store_name = models.CharField(max_length=255)
     store_slug = models.SlugField(unique=True)
     gst_number = models.CharField(max_length=50)
@@ -14,15 +15,18 @@ class SellerProfile(models.Model):
     rating = models.FloatField(default=0)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.store_name
 
 class Product(models.Model):
-    seller = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, related_name="products")
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name="products")
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seller = models.ForeignKey("seller.SellerProfile", on_delete=models.CASCADE, related_name="products")
+    subcategory = models.ForeignKey("core.SubCategory", on_delete=models.CASCADE, related_name="products")
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     description = models.TextField()
     brand = models.CharField(max_length=100)
-    price = models.IntegerField(default=0)
     model_number = models.CharField(max_length=100)
     is_cancellable = models.BooleanField(default=True)
     is_returnable = models.BooleanField(default=True)
@@ -35,23 +39,21 @@ class Product(models.Model):
             base_slug = slugify(self.name)
             slug = base_slug
             counter = 1
-
-            while Product.objects.filter(slug=slug).exists():
+            while Product.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 slug = f"{base_slug}-{counter}"
                 counter += 1
-
             self.slug = slug
-
         super().save(*args, **kwargs)
-
     def __str__(self):
         return self.name
 
 class ProductVariant(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")
+    slug = models.SlugField(unique=True, blank=True)  
     sku_code = models.CharField(max_length=100, unique=True)
     mrp = models.DecimalField(max_digits=10, decimal_places=2)
-    selling_price = models.DecimalField(max_digits=10, decimal_places=2)
+    selling_price = models.FloatField(null= True,default=0.0)
     cost_price = models.DecimalField(max_digits=10, decimal_places=2)
     stock_quantity = models.IntegerField()
     weight = models.FloatField(help_text="Weight in kg")
@@ -61,28 +63,61 @@ class ProductVariant(models.Model):
     tax_percentage = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="products/")
-    alt_text = models.CharField(max_length=255, blank=True)
-    is_primary = models.BooleanField(default=False)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(f"{self.product.name}-{self.sku_code}")
+            slug = base_slug
+            counter = 1
+            while ProductVariant.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.product.name
+        return f"{self.product.name} - {self.sku_code}"
+
+class ProductImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    product = models.ForeignKey("seller.Product", on_delete=models.CASCADE, related_name="images", null=True, blank=True)
+    variant = models.ForeignKey("seller.ProductVariant", on_delete=models.CASCADE, related_name="images", null=True, blank=True)
+    image = models.ImageField(upload_to='product_images',null=True)
+    alt_text = models.CharField(max_length=255, blank=True)
+    is_primary = models.BooleanField(default=False)
+    
+    def __str__(self):
+        if self.variant:
+            return f"Image for {self.variant.sku_code}"
+        return f"Image for {self.product.name}"
+
 class Attribute(models.Model):
-    name = models.CharField(max_length=100) # e.g., Color, Size
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
 
 class AttributeOption(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="options")
-    value = models.CharField(max_length=100) # e.g., Red, XL
+    value = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return f"{self.attribute.name}: {self.value}"
 
 class VariantAttributeBridge(models.Model):
-    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
+    variant = models.ForeignKey("seller.ProductVariant", on_delete=models.CASCADE)
     option = models.ForeignKey(AttributeOption, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.variant.sku_code} - {self.option}"
 
 class InventoryLog(models.Model):
-    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
+    variant = models.ForeignKey("seller.ProductVariant", on_delete=models.CASCADE)
     change_amount = models.IntegerField()
     reason = models.CharField(max_length=50)
-    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    performed_by = models.ForeignKey("core.User", on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.variant.sku_code} ({self.change_amount})"

@@ -57,7 +57,8 @@ ROOT_URLCONF = 'pro1.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        # use absolute path for templates directory so loader always finds files
+    'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,6 +125,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = [BASE_DIR, 'media']
+# MEDIA_ROOT must be a string path; list caused _path_normpath error in admin
+MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'core.User'

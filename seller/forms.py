@@ -13,7 +13,6 @@ class ProductForm(forms.ModelForm):
         fields = [
             "name",
             "brand",
-            'price',
             "model_number",
             "subcategory",
             "description",
@@ -27,9 +26,6 @@ class ProductForm(forms.ModelForm):
                 "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
             }),
             "brand": forms.TextInput(attrs={
-                "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
-            }),
-             "price": forms.TextInput(attrs={
                 "class": "w-full rounded-xl border-gray-300 focus:ring-primary focus:border-primary"
             }),
             "model_number": forms.TextInput(attrs={
@@ -58,7 +54,8 @@ ProductImageFormSet = inlineformset_factory(
     Product,
     ProductImage,
     form=ProductImageForm,
-    extra=4,   # shows 4 upload boxes
+    extra=4,
+    fk_name='product',
     can_delete=True
 )
 

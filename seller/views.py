@@ -10,8 +10,15 @@ def seller_home_view(request):
     
     seller_profile = get_object_or_404(SellerProfile, user=request.user)
 
-    products = Product.objects.filter(seller=seller_profile)
-    print(seller_profile)
+    # fetch seller products along with variants and images
+    products = Product.objects.filter(seller=seller_profile).prefetch_related('variants', 'images')
+    # populate helper attributes used by template
+    for product in products:
+        first = product.variants.first()
+        # price should come from first variant
+        product.price = first.selling_price if first else 0
+        # choose an image, prefer product-level
+        product.image = product.images.first()
 
     return render(request, 'seller_templates/homepage.html',{
         'products': products,
@@ -52,6 +59,9 @@ def addproduct(request):
     })
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    # price from first variant if available
+    first = product.variants.first()
+    product.price = first.selling_price if first else 0
     return render(request, "seller_templates/product_detail.html", {"product": product})
 
 @login_required(login_url='login')
