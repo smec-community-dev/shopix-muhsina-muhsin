@@ -1,198 +1,84 @@
+{% extends 'seller_templates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management | Shopix Seller</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #f3f4f6; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #fbbf24; }
-    </style>
-</head>
+{% block title %}My Products | Shopix Seller{% endblock %}
+{% block page_title %}My Products{% endblock %}
 
-<body x-data="{ showProfile: false }" class="bg-white text-gray-900 selection:bg-amber-100 selection:text-amber-900">
+{% block content %}
+<div class="max-w-6xl mx-auto w-full">
 
-    <div class="flex min-h-screen">
-        <aside class="w-64 border-r border-gray-100 hidden lg:flex flex-col sticky top-0 h-screen bg-white">
-            <div class="p-6 flex items-center border-b border-gray-50 mb-4">
-                <div class="w-32 h-12 overflow-hidden">
-                    <img src="{% static 'images/shopix_logo.jpeg' %}" alt="Shopix Logo" class="w-full h-full object-contain">
-                </div>
-            </div>
-
-            <nav class="flex-1 px-4 py-4 space-y-2">
-                <a href="{% url 'sellerhome' %}"
-                    class="flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'sellerhome' %}text-amber-600 bg-amber-50 font-bold{% else %}text-gray-400 hover:text-amber-500 hover:bg-amber-50 font-semibold{% endif %} rounded-xl transition-all">
-                    <span class="material-icons-round">dashboard</span>
-                    <span class="text-sm">Dashboard</span>
-                </a>
-
-                <a href="{% url 'productlist' %}"
-                    class="flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'productlist' %}text-amber-600 bg-amber-50 font-bold{% else %}text-gray-400 hover:text-amber-500 hover:bg-amber-50 font-semibold{% endif %} rounded-xl transition-all group">
-                    <span class="material-icons-round">inventory_2</span>
-                    <span class="text-sm">My Products</span>
-                </a>
-
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl font-semibold transition-all">
-                    <span class="material-icons-round">shopping_bag</span>
-                    <span class="text-sm">Orders</span>
-                </a>
-
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl font-semibold transition-all">
-                    <span class="material-icons-round">alternate_email</span>
-                    <span class="text-sm">Messages</span>
-                </a>
-
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl font-semibold transition-all">
-                    <span class="material-icons-round">payments</span>
-                    <span class="text-sm">Earnings</span>
-                </a>
-
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl font-semibold transition-all">
-                    <span class="material-icons-round">insights</span>
-                    <span class="text-sm">Analytics</span>
-                </a>
-            </nav>
-
-            <div class="m-6 bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-2xl border border-amber-100/50">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="material-icons-round text-amber-500 text-lg">workspace_premium</span>
-                    <p class="text-[10px] font-black text-amber-800 uppercase tracking-widest">Pro Plan</p>
-                </div>
-                <p class="text-xs text-amber-700/80 leading-relaxed mb-4">Unlock advanced analytics and bulk product uploads.</p>
-                <button class="w-full py-2.5 bg-gray-900 text-white text-xs font-bold rounded-xl shadow-lg shadow-gray-200 hover:bg-amber-500 hover:shadow-amber-200 transition-all active:scale-95">Upgrade Now</button>
-            </div>
-        </aside>
-
-        <main class="flex-1 bg-white">
-            <header class="border-b border-gray-50 px-8 py-5 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-30">
-                <div class="relative w-full max-md hidden sm:block">
-                    <span class="material-icons-round absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">search</span>
-                    <input type="text" placeholder="Search inventory..." 
-                        class="w-full bg-gray-50 border border-gray-100 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:ring-4 focus:ring-amber-500/10 focus:bg-white focus:border-amber-300 transition-all outline-none">
-                </div>
-                
-                <div class="flex items-center gap-5">
-                    <button class="w-10 h-10 flex items-center justify-center text-gray-400 hover:bg-gray-50 hover:text-amber-500 rounded-xl transition-all relative">
-                        <span class="material-icons-round">notifications</span>
-                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
-                    </button>
-                    <div class="h-8 w-[1px] bg-gray-100 mx-1"></div>
-                    
-                    <div class="relative flex items-center gap-3 pl-2 group cursor-pointer">
-                        <div class="text-right hidden sm:block" @click="showProfile = !showProfile">
-                            <p class="text-xs font-bold text-gray-900 leading-none">{{ seller_profile.store_name|default:"Seller Admin" }}</p>
-                            <p class="text-[10px] text-amber-500 font-bold mt-1">ACCOUNT SETTINGS</p>
-                        </div>
-                        <div @click="showProfile = !showProfile" class="w-10 h-10 rounded-xl bg-amber-100 border-2 border-amber-50 overflow-hidden shadow-sm group-hover:border-amber-300 transition-all flex items-center justify-center">
-                            <span class="material-icons-round text-amber-600">person</span>
-                        </div>
-
-                        <div x-show="showProfile" @click.outside="showProfile = false"
-                            x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            class="absolute right-0 top-14 w-48 bg-white border border-gray-100 rounded-xl p-2 z-50 shadow-xl"
-                            style="display: none;">
-                            <a href="{% url 'sellerprofile' %}" class="block px-4 py-2 text-sm hover:bg-amber-50 rounded-lg text-gray-700 font-medium">View Profile</a>
-                            <hr class="border-gray-50 my-1">
-                            <form method="post" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button type="submit" class="w-full text-left px-4 py-2 text-sm hover:bg-red-50 rounded-lg text-red-500 font-bold">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <section class="p-8">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 max-w-6xl">
-                    <div>
-                        <h3 class="text-3xl font-black text-gray-900 tracking-tight">Active Inventory</h3>
-                        <p class="text-gray-400 text-sm font-medium mt-1">
-                            Current catalogue: <span class="text-amber-600 font-extrabold">{{ products|length }} Products</span>
-                        </p>
-                    </div>
-                    <a href="{% url 'addproduct' %}"
-                        class="flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-amber-500 transition-all shadow-xl shadow-gray-200 hover:shadow-amber-200 group active:scale-95">
-                        <span class="material-icons-round text-sm group-hover:rotate-90 transition-transform">add</span>
-                        New Product Listing
-                    </a>
-                </div>
-
-                <div class="max-w-6xl space-y-3">
-                    {% for product in products %}
-                    <div class="group bg-white hover:bg-amber-50/20 border border-gray-100 hover:border-amber-200/50 rounded-[2rem] p-3 pl-4 pr-6 transition-all duration-500 flex items-center shadow-sm hover:shadow-xl hover:shadow-amber-100/20">
-                        
-                        <div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0 mr-6 border border-gray-100 p-0.5 group-hover:border-amber-200 transition-colors">
-                            {% with product.images.first as img %}
-                            {% if img %}
-                            <img src="{{ img.image.url }}" class="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform duration-700">
-                            {% else %}
-                            <div class="w-full h-full flex items-center justify-center text-amber-200 bg-amber-50/50">
-                                <span class="material-icons-round text-2xl">image</span>
-                            </div>
-                            {% endif %}
-                            {% endwith %}
-                        </div>
-
-                        <div class="flex-1 min-w-0 pr-4">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[9px] font-black text-amber-600 uppercase bg-amber-100/50 px-2 py-0.5 rounded-full tracking-wider border border-amber-200/30">
-                                    {{product.brand|default:"General"}}
-                                </span>
-                                <span class="text-[10px] text-gray-400 font-bold tracking-tighter">#{{product.id|truncatechars:8}}</span>
-                            </div>
-                            <h2 class="text-[15px] font-bold text-gray-900 truncate group-hover:text-amber-600 transition-colors leading-tight">
-                                {{ product.name }}
-                            </h2>
-                        </div>
-
-                        <div class="w-32 px-4 text-right">
-                            <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-0.5">Unit Price</p>
-                            <span class="text-lg font-black text-gray-900 tracking-tight">₹{{ product.price }}</span>
-                        </div>
-
-                        <div class="w-28 px-4 text-center border-l border-gray-100 ml-2 hidden md:block">
-                            <span class="text-[15px] font-black {% if product.stock == 0 %}text-red-500 animate-pulse{% else %}text-gray-900{% endif %}">
-                                {{ product.stock }}
-                            </span>
-                            <span class="text-[9px] text-gray-400 uppercase font-black block tracking-tighter mt-0.5">Available</span>
-                        </div>
-
-                        <div class="flex justify-end gap-2.5 ml-6">
-                            <a href="{% url 'edit_product' product.slug %}"
-                                class="w-11 h-11 flex items-center justify-center rounded-2xl bg-white border border-gray-100 text-gray-400 hover:text-amber-600 hover:border-amber-200 hover:shadow-lg hover:shadow-amber-100 transition-all">
-                                <span class="material-icons-round text-[20px]">edit_note</span>
-                            </a>
-                            <a href="{% url 'product_detail' product.id %}"
-                                class="w-11 h-11 flex items-center justify-center rounded-2xl bg-gray-900 text-white hover:bg-amber-500 transition-all shadow-md shadow-gray-100 hover:shadow-amber-200 active:scale-95">
-                                <span class="material-icons-round text-[20px]">visibility</span>
-                            </a>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="py-24 text-center bg-gray-50/50 rounded-[3rem] border-2 border-dashed border-gray-200">
-                        <div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                            <span class="material-icons-round text-amber-300 text-4xl">inventory_2</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 tracking-tight">Catalogue is empty</h3>
-                        <p class="text-gray-400 text-sm max-w-xs mx-auto mt-2 leading-relaxed">It seems you haven't listed any products yet. Click the button above to get started.</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-        </main>
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h3 class="text-2xl font-black text-gray-900">Active Inventory</h3>
+            <p class="text-sm text-gray-400 mt-0.5">
+                Current catalogue: <span class="text-amber-500 font-semibold">{{ products|length }} Products</span>
+            </p>
+        </div>
+        <a href="{% url 'addproduct' %}"
+            class="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-amber-500 transition-all shadow-sm">
+            <span class="material-icons-round text-[16px]">add</span> New Product
+        </a>
     </div>
 
-</body>
-</html>
+    <div class="space-y-3">
+        {% for product in products %}
+        <div class="group bg-white border border-gray-100 hover:border-amber-200/60 rounded-2xl p-3 pl-4 pr-6 flex items-center transition-all hover:shadow-md">
+
+            <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0 mr-5 group-hover:border-amber-200 transition-colors">
+                {% with product.images.first as img %}
+                {% if img %}
+                <img src="{{ img.image.url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center text-gray-300">
+                    <span class="material-icons-round text-[22px]">image</span>
+                </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="flex-1 min-w-0 pr-4">
+                <span class="text-[9px] font-black text-amber-600 uppercase bg-amber-50 px-2 py-0.5 rounded-full tracking-wider">
+                    {{ product.brand|default:"General" }}
+                </span>
+                <h2 class="text-sm font-bold text-gray-900 truncate mt-1 group-hover:text-amber-600 transition-colors">
+                    {{ product.name }}
+                </h2>
+            </div>
+
+            <div class="w-28 text-right px-4 hidden sm:block">
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Price</p>
+                <p class="text-base font-black text-gray-900">₹{{ product.price }}</p>
+            </div>
+
+            <div class="w-24 text-center border-l border-gray-100 px-4 hidden md:block">
+                <p class="text-base font-black {% if product.stock == 0 %}text-red-500{% else %}text-gray-900{% endif %}">{{ product.stock }}</p>
+                <p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mt-0.5">Stock</p>
+            </div>
+
+            <div class="flex gap-2 ml-4">
+                <a href="{% url 'edit_product' product.slug %}"
+                    class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-gray-400 hover:text-amber-600 hover:border-amber-200 transition-all">
+                    <span class="material-icons-round text-[18px]">edit_note</span>
+                </a>
+                <a href="{% url 'product_detail' product.id %}"
+                    class="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-900 text-white hover:bg-amber-500 transition-all">
+                    <span class="material-icons-round text-[18px]">visibility</span>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="py-24 text-center bg-white rounded-2xl border border-dashed border-gray-200">
+            <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <span class="material-icons-round text-amber-300 text-3xl">inventory_2</span>
+            </div>
+            <h3 class="text-base font-bold text-gray-900">No products yet</h3>
+            <p class="text-gray-400 text-sm mt-1 mb-5">Start by adding your first product listing.</p>
+            <a href="{% url 'addproduct' %}" class="px-5 py-2.5 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-amber-500 transition-all">
+                Add Product
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

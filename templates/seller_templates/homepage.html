@@ -1,301 +1,171 @@
+{% extends 'seller_templates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard | Shopix</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
-    </style>
-</head>
+{% block title %}Dashboard | Shopix Seller{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 
-<body x-data="{ showProfile: false }" class="bg-gray-50 text-gray-900">
+{% block content %}
+<div class="max-w-6xl mx-auto w-full">
 
-    <div class="flex min-h-screen">
-
-        <!-- Sidebar -->
-        <aside class="w-64 hidden lg:flex flex-col fixed top-0 left-0 h-screen bg-white border-r border-gray-100 z-40">
-
-            <!-- Logo -->
-            <div class="h-16 flex items-center px-5 border-b border-gray-100">
-                <img src="{% static 'images/shopix_seller_logo.png' %}" alt="Shopix Logo" class="h-full w-full object-contain py-2" />
-            </div>
-
-            <!-- Nav -->
-            <nav class="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
-                <p class="text-[10px] font-bold text-gray-300 uppercase tracking-widest px-3 mb-3">Main Menu</p>
-
-                <a href="{% url 'sellerhome' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all
-                    {% if request.resolver_match.url_name == 'sellerhome' %}bg-amber-50 text-amber-600{% else %}text-gray-500 hover:bg-gray-50 hover:text-gray-900{% endif %}">
-                    <span class="material-icons-round text-[20px]">dashboard</span>
-                    Dashboard
-                </a>
-
-                <a href="{% url 'productlist' %}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all">
-                    <span class="material-icons-round text-[20px]">inventory_2</span>
-                    My Products
-                </a>
-
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all">
-                    <span class="material-icons-round text-[20px]">shopping_bag</span>
-                    Orders
-                </a>
-
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all">
-                    <span class="material-icons-round text-[20px]">payments</span>
-                    Earnings
-                </a>
-
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all">
-                    <span class="material-icons-round text-[20px]">insights</span>
-                    Analytics
-                </a>
-            </nav>
-
-            <!-- Upgrade Card -->
-            <div class="m-4 bg-gray-900 rounded-2xl p-5 relative overflow-hidden">
-                <div class="absolute -right-3 -top-3 w-16 h-16 bg-amber-400/20 rounded-full blur-xl"></div>
-                <p class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Enterprise</p>
-                <p class="text-xs text-gray-400 mb-4 leading-relaxed">Unlock AI insights & advanced analytics.</p>
-                <button class="w-full py-2 bg-amber-400 text-gray-900 text-xs font-black rounded-xl hover:bg-amber-300 transition-colors">
-                    Upgrade Now
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="flex-1 lg:ml-64 flex flex-col min-h-screen">
-
-            <!-- Header -->
-            <header class="h-16 bg-white border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-30">
-                <h2 class="text-base font-bold text-gray-900">Dashboard</h2>
-
-                <div class="flex items-center gap-4">
-                    <!-- Search -->
-                    <div class="relative hidden md:block">
-                        <span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
-                        <input type="text" placeholder="Search..."
-                            class="bg-gray-50 border border-gray-100 rounded-xl py-2 pl-9 pr-4 text-xs w-52 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-300 transition-all">
-                    </div>
-
-                    <!-- Notifications -->
-                    <button class="relative w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 rounded-xl transition-all">
-                        <span class="material-icons-round text-[20px]">notifications</span>
-                        <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                    </button>
-
-                    <div class="w-px h-6 bg-gray-100"></div>
-
-                    <!-- Profile -->
-                    <div class="relative flex items-center gap-2.5 cursor-pointer" @click="showProfile = !showProfile">
-                        <div class="text-right hidden sm:block">
-                            <p class="text-xs font-bold text-gray-800 leading-none">{{ seller_profile.store_name|default:"Seller Admin" }}</p>
-                            <p class="text-[10px] text-amber-500 font-semibold mt-0.5">Verified Store</p>
-                        </div>
-                        <div class="w-9 h-9 rounded-xl bg-gray-900 flex items-center justify-center hover:bg-amber-500 transition-colors">
-                            <span class="material-icons-round text-white text-[18px]">person</span>
-                        </div>
-
-                        <div x-show="showProfile" @click.outside="showProfile = false"
-                            class="absolute right-0 top-12 w-44 bg-white border border-gray-100 rounded-2xl p-1.5 z-50 shadow-xl"
-                            style="display:none;">
-                            <a href="{% url 'sellerprofile' %}"
-                                class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 rounded-xl transition-all">
-                                <span class="material-icons-round text-[16px]">settings</span> Settings
-                            </a>
-                            <form method="post" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button type="submit"
-                                    class="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-all">
-                                    <span class="material-icons-round text-[16px]">logout</span> Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Page Body -->
-            <main class="flex-1 p-8 max-w-6xl mx-auto w-full">
-
-                <!-- Page Title -->
-                <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-2xl font-black text-gray-900">Overview</h3>
-                        <p class="text-sm text-gray-400 mt-0.5">
-                            Welcome back, <span class="text-amber-500 font-semibold">{{ seller_profile.store_name|default:"your store" }}</span>
-                        </p>
-                    </div>
-                    <div class="flex gap-3">
-                        <button class="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-gray-300 transition-all shadow-sm">
-                            Download Report
-                        </button>
-                        <a href="{% url 'addproduct' %}"
-                            class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-amber-500 transition-all shadow-sm flex items-center gap-1.5">
-                            <span class="material-icons-round text-[16px]">add</span> New Listing
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Stat Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Revenue</p>
-                            <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
-                                <span class="material-icons-round text-[18px]">payments</span>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-gray-900">₹42,500</p>
-                        <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
-                            <span class="material-icons-round text-[14px]">trending_up</span> +14.2% this week
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Orders</p>
-                            <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
-                                <span class="material-icons-round text-[18px]">shopping_cart</span>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-gray-900">1,284</p>
-                        <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
-                            <span class="material-icons-round text-[14px]">trending_up</span> +8.4% this week
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Satisfaction</p>
-                            <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500">
-                                <span class="material-icons-round text-[18px]">verified</span>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-gray-900">98.2%</p>
-                        <div class="flex items-center gap-1 mt-3 text-gray-400 text-xs font-bold">
-                            <span class="material-icons-round text-[14px]">star</span> Top Rated Seller
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Charts + Top Products -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-                    <!-- Sales Chart -->
-                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100">
-                        <div class="flex items-center justify-between mb-6">
-                            <div>
-                                <h4 class="text-sm font-black text-gray-900">Sales Analytics</h4>
-                                <p class="text-xs text-gray-400 mt-0.5">Revenue per day</p>
-                            </div>
-                            <div class="flex bg-gray-50 p-1 rounded-xl gap-1">
-                                <button class="px-3 py-1.5 bg-white text-[10px] font-black rounded-lg shadow-sm text-gray-800">Weekly</button>
-                                <button class="px-3 py-1.5 text-[10px] font-black text-gray-400 hover:text-gray-600">Monthly</button>
-                            </div>
-                        </div>
-
-                        <div class="h-52 flex items-end justify-between gap-3 px-1">
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-gray-100 rounded-xl h-28 hover:bg-amber-400 transition-all duration-300 cursor-pointer relative group">
-                                    <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">₹2k</span>
-                                </div>
-                                <span class="text-[10px] font-bold text-gray-300">Mon</span>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-gray-100 rounded-xl h-36 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                                <span class="text-[10px] font-bold text-gray-300">Tue</span>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-amber-400 rounded-xl h-44 shadow-lg shadow-amber-100 relative">
-                                    <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded whitespace-nowrap">₹12k</span>
-                                </div>
-                                <span class="text-[10px] font-bold text-gray-300">Wed</span>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-gray-100 rounded-xl h-32 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                                <span class="text-[10px] font-bold text-gray-300">Thu</span>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-gray-100 rounded-xl h-40 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                                <span class="text-[10px] font-bold text-gray-300">Fri</span>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-gray-100 rounded-xl h-20 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                                <span class="text-[10px] font-bold text-gray-300">Sat</span>
-                            </div>
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-gray-100 rounded-xl h-44 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                                <span class="text-[10px] font-bold text-gray-300">Sun</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Top Products -->
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 flex flex-col">
-                        <h4 class="text-sm font-black text-gray-900 mb-5">Top Products</h4>
-
-                        <div class="space-y-4 flex-1">
-                            <div class="flex items-center gap-3 group cursor-pointer">
-                                <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
-                                    <span class="material-icons-round text-gray-300 text-[20px]">image</span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-bold text-gray-900 truncate">Nike Air Max Gen-Z</p>
-                                    <p class="text-[10px] text-amber-500 font-semibold mt-0.5">42 sales today</p>
-                                </div>
-                                <p class="text-xs font-black text-gray-900">₹8,499</p>
-                            </div>
-
-                            <div class="flex items-center gap-3 group cursor-pointer">
-                                <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
-                                    <span class="material-icons-round text-gray-300 text-[20px]">image</span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-bold text-gray-900 truncate">Matte Black Watch</p>
-                                    <p class="text-[10px] text-amber-500 font-semibold mt-0.5">18 sales today</p>
-                                </div>
-                                <p class="text-xs font-black text-gray-900">₹2,200</p>
-                            </div>
-
-                            <div class="flex items-center gap-3 group cursor-pointer">
-                                <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
-                                    <span class="material-icons-round text-gray-300 text-[20px]">image</span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-bold text-gray-900 truncate">Wireless Earbuds Pro</p>
-                                    <p class="text-[10px] text-amber-500 font-semibold mt-0.5">11 sales today</p>
-                                </div>
-                                <p class="text-xs font-black text-gray-900">₹3,999</p>
-                            </div>
-                        </div>
-
-                        <button class="w-full mt-5 py-3 bg-gray-50 hover:bg-gray-900 hover:text-white text-gray-700 text-xs font-black rounded-xl transition-all uppercase tracking-widest">
-                            View All
-                        </button>
-                    </div>
-
-                </div>
-            </main>
+    <!-- Page Title -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h3 class="text-2xl font-black text-gray-900">Overview</h3>
+            <p class="text-sm text-gray-400 mt-0.5">
+                Welcome back, <span class="text-amber-500 font-semibold">{{ seller_profile.store_name|default:"your store" }}</span>
+            </p>
+        </div>
+        <div class="flex gap-3">
+            <button class="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-gray-300 transition-all shadow-sm">
+                Download Report
+            </button>
+            <a href="{% url 'addproduct' %}"
+                class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-amber-500 transition-all shadow-sm flex items-center gap-1.5">
+                <span class="material-icons-round text-[16px]">add</span> New Listing
+            </a>
         </div>
     </div>
 
-</body>
-</html>
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Revenue</p>
+                <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
+                    <span class="material-icons-round text-[18px]">payments</span>
+                </div>
+            </div>
+            <p class="text-3xl font-black text-gray-900">₹42,500</p>
+            <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
+                <span class="material-icons-round text-[14px]">trending_up</span> +14.2% this week
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Orders</p>
+                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
+                    <span class="material-icons-round text-[18px]">shopping_cart</span>
+                </div>
+            </div>
+            <p class="text-3xl font-black text-gray-900">1,284</p>
+            <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
+                <span class="material-icons-round text-[14px]">trending_up</span> +8.4% this week
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Satisfaction</p>
+                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500">
+                    <span class="material-icons-round text-[18px]">verified</span>
+                </div>
+            </div>
+            <p class="text-3xl font-black text-gray-900">98.2%</p>
+            <div class="flex items-center gap-1 mt-3 text-gray-400 text-xs font-bold">
+                <span class="material-icons-round text-[14px]">star</span> Top Rated Seller
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts + Top Products -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <!-- Sales Chart -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h4 class="text-sm font-black text-gray-900">Sales Analytics</h4>
+                    <p class="text-xs text-gray-400 mt-0.5">Revenue per day</p>
+                </div>
+                <div class="flex bg-gray-50 p-1 rounded-xl gap-1">
+                    <button class="px-3 py-1.5 bg-white text-[10px] font-black rounded-lg shadow-sm text-gray-800">Weekly</button>
+                    <button class="px-3 py-1.5 text-[10px] font-black text-gray-400 hover:text-gray-600">Monthly</button>
+                </div>
+            </div>
+
+            <div class="h-52 flex items-end justify-between gap-3 px-1">
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-28 hover:bg-amber-400 transition-all duration-300 cursor-pointer relative group">
+                        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">₹2k</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-300">Mon</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-36 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Tue</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-amber-400 rounded-xl h-44 shadow-lg shadow-amber-100 relative">
+                        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded whitespace-nowrap">₹12k</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-300">Wed</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-32 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Thu</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-40 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Fri</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-20 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Sat</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-44 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Sun</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 flex flex-col">
+            <h4 class="text-sm font-black text-gray-900 mb-5">Top Products</h4>
+
+            <div class="space-y-4 flex-1">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
+                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">Nike Air Max Gen-Z</p>
+                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">42 sales today</p>
+                    </div>
+                    <p class="text-xs font-black text-gray-900">₹8,499</p>
+                </div>
+
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
+                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">Matte Black Watch</p>
+                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">18 sales today</p>
+                    </div>
+                    <p class="text-xs font-black text-gray-900">₹2,200</p>
+                </div>
+
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
+                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">Wireless Earbuds Pro</p>
+                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">11 sales today</p>
+                    </div>
+                    <p class="text-xs font-black text-gray-900">₹3,999</p>
+                </div>
+            </div>
+
+            <button class="w-full mt-5 py-3 bg-gray-50 hover:bg-gray-900 hover:text-white text-gray-700 text-xs font-black rounded-xl transition-all uppercase tracking-widest">
+                View All
+            </button>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
