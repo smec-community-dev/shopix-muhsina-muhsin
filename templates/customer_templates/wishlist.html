@@ -99,7 +99,7 @@
             {% for item in wishlist_items %}
             <div class="bg-[#161616] border border-white/5 rounded-[2.5rem] p-6 transition-all duration-500 group shadow-2xl relative wishlist-card">
                 
-                <a href="#" 
+                <a href="{% url 'remove_from_wishlist' item.id %}" 
                    class="absolute top-6 right-6 z-20 w-10 h-10 flex items-center justify-center bg-black/40 text-white/40 hover:text-white hover:bg-[#A04747] rounded-full transition-all duration-300 group-hover:scale-110">
                     <span class="material-icons-round text-xl">close</span>
                 </a>

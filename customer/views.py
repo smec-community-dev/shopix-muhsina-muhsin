@@ -2,7 +2,10 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from seller.models import *
+
+User = get_user_model()
 
 # @login_required(login_url='login')
 # def customer_home_view(request):
@@ -16,7 +19,34 @@ def profile_view(request):
     if request.method == "POST":
         user.first_name = request.POST.get('first_name')
         user.last_name = request.POST.get('last_name')
-        user.phone_number = request.POST.get('phone')
+
+        # Username
+        new_username = (request.POST.get('username') or '').strip()
+        if new_username and new_username != user.username:
+            if User.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                messages.error(request, "This username is already taken by another account.")
+                return redirect('profile')
+            user.username = new_username
+
+        # Email
+        new_email = (request.POST.get('email') or '').strip()
+        if new_email and new_email != user.email:
+            if User.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+                messages.error(request, "This email is already taken by another account.")
+                return redirect('profile')
+            user.email = new_email
+
+        # Phone
+        phone = (request.POST.get('phone') or '').strip()
+        if phone:
+            # Ensure uniqueness across all users (excluding the current user)
+            if User.objects.filter(phone_number=phone).exclude(pk=user.pk).exists():
+                messages.error(request, "This phone number is already taken by another account.")
+                return redirect('profile')
+            user.phone_number = phone
+        else:
+            user.phone_number = None
+
         image = request.FILES.get('profile_image')
         if image:
             user.profile_image = image
@@ -109,19 +139,18 @@ def add_to_wishlist(request, variant_id):
 
     variant = get_object_or_404(ProductVariant, id=variant_id)
     
-    # 1. Get or create the main Wishlist container for the user
     wishlist, created = Wishlist.objects.get_or_create(
         user=request.user, 
         defaults={'wishlist_name': f"{request.user.username}'s Wishlist"}
     )
 
-    # 2. Check if the item already exists in WishlistItem for THIS specific wishlist
+   
     exists = WishlistItem.objects.filter(wishlist=wishlist, variant=variant).exists()
 
     if exists:
         messages.info(request, "This item is already in your wishlist.")
     else:
-        # 3. Create the WishlistItem entry
+
         WishlistItem.objects.create(wishlist=wishlist, variant=variant)
         messages.success(request, "Added to wishlist!")
 
@@ -130,10 +159,7 @@ def add_to_wishlist(request, variant_id):
 
 @login_required
 def wishlist_view(request):
-    # Fetch the wishlist container for the user
     wishlist = Wishlist.objects.filter(user=request.user).first()
-    
-    # Fetch all items inside that wishlist (using the related_name="items")
     wishlist_items = []
     if wishlist:
         wishlist_items = wishlist.items.all().select_related('variant', 'variant__product')
@@ -143,8 +169,6 @@ def wishlist_view(request):
 @login_required
 def remove_from_wishlist(request, wishlist_item_id):
     """Deletes a specific wishlist entry"""
-    # 1. CHANGE: Look in 'WishlistItem' instead of 'Wishlist'
-    # 2. CHANGE: Use 'wishlist__user' to traverse the relationship
     item = get_object_or_404(WishlistItem, id=wishlist_item_id, wishlist__user=request.user)
     
     product_name = item.variant.product.name
@@ -154,12 +178,11 @@ def remove_from_wishlist(request, wishlist_item_id):
     return redirect('wishlist_view')
 
 
-@login_required
+@login_required 
 def clear_wishlist(request):
     """Deletes all items from the user's wishlist without deleting the wishlist itself"""
-    # CHANGE: Delete the items inside, not the Wishlist object
+
     WishlistItem.objects.filter(wishlist__user=request.user).delete()
     
     messages.success(request, "Wishlist cleared successfully.")
     return redirect('wishlist_view')
-

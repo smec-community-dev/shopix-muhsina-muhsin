@@ -10,4 +10,7 @@ urlpatterns = [
     path('logout/',views.logout_view,name='logout'),
     path('',views.home_view,name='home'),
     path('product/<uuid:id>/', views.single_variant_view, name='single_fetch'),
+    path('products/', views.products, name='products'),
+    path('search/', views.search_view, name='search'),
+
 ]

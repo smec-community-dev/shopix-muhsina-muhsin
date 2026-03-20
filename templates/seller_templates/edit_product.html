@@ -2,11 +2,9 @@
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>E-SHOP | Add Product</title>
+    <title>E-SHOP | Edit Product</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 
@@ -31,32 +29,30 @@
             cursor: pointer;
         }
     </style>
-
 </head>
 
 <body class="bg-gray-50 text-gray-800 font-sans p-6 md:p-10">
 
-    <form method="post" enctype="multipart/form-data" class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-8">
+    <form method="POST" action="{% url 'edit_product' product.slug %}" enctype="multipart/form-data"
+        class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-8">
 
         {% csrf_token %}
 
         <div class="flex justify-between items-center mb-8 border-b pb-6">
 
             <div>
-
                 <h1 class="text-3xl font-bold">
-                    Add <span class="text-primary">New Product</span>
+                    Edit <span class="text-primary">Product</span>
                 </h1>
 
                 <p class="text-sm text-gray-500">
-                    Fill product details carefully before publishing.
+                    Update product details and images.
                 </p>
-
             </div>
 
             <button type="submit"
                 class="px-6 py-2 border rounded-lg text-sm font-semibold hover:bg-gray-100 transition">
-                Save Draft
+                Save Changes
             </button>
 
         </div>
@@ -64,8 +60,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-
-            <!-- LEFT SIDE IMAGE UPLOAD -->
+            <!-- IMAGE UPLOAD SECTION -->
 
             <div>
 
@@ -84,12 +79,21 @@
                         {{ image_form.id }}
 
                         <label class="w-full h-48 flex items-center justify-center
-border-2 border-dashed border-gray-300
-rounded-xl cursor-pointer hover:border-primary
-hover:bg-gray-50 transition">
+                    border-2 border-dashed border-gray-300
+                    rounded-xl cursor-pointer hover:border-primary
+                    hover:bg-gray-50 transition">
+
+                            {% if image_form.instance.image %}
+
+                            <img src="{{ image_form.instance.image.url }}" id="preview{{ forloop.counter }}"
+                                class="absolute inset-0 w-full h-full object-cover rounded-xl">
+
+                            {% else %}
 
                             <img id="preview{{ forloop.counter }}"
                                 class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
+
+                            {% endif %}
 
                             <input type="file" name="{{ image_form.image.html_name }}"
                                 id="{{ image_form.image.id_for_label }}" accept="image/*"
@@ -101,6 +105,15 @@ hover:bg-gray-50 transition">
 
                         </label>
 
+                        {% if image_form.instance.pk %}
+
+                        <div class="flex items-center gap-2 mt-2 text-xs text-red-500">
+                            {{ image_form.DELETE }}
+                            <label>Delete</label>
+                        </div>
+
+                        {% endif %}
+
                     </div>
 
                     {% endfor %}
@@ -110,118 +123,86 @@ hover:bg-gray-50 transition">
             </div>
 
 
-
-            <!-- RIGHT SIDE PRODUCT FORM -->
+            <!-- PRODUCT FORM SECTION -->
 
             <div class="space-y-6">
 
                 <div>
-
                     <label class="block text-sm font-semibold mb-2">
                         Product Name
                     </label>
-
                     {{ form.name }}
-
                 </div>
 
 
                 <div class="grid grid-cols-2 gap-4">
 
                     <div>
-
                         <label class="block text-sm font-semibold mb-2">
                             Brand
                         </label>
-
                         {{ form.brand }}
-
                     </div>
 
                     <div>
-
                         <label class="block text-sm font-semibold mb-2">
                             Model Number
                         </label>
-
                         {{ form.model_number }}
-
                     </div>
 
                 </div>
-            </div>
 
 
                 <div>
-
                     <label class="block text-sm font-semibold mb-2">
                         Product Price
                     </label>
-
                     {{ form.price }}
-
                 </div>
 
 
                 <div>
-
                     <label class="block text-sm font-semibold mb-2">
                         Sub Category
                     </label>
-
                     {{ form.subcategory }}
-
                 </div>
 
 
                 <div>
-
                     <label class="block text-sm font-semibold mb-2">
                         Description
                     </label>
-
                     {{ form.description }}
-
                 </div>
-
 
 
                 <div class="grid grid-cols-2 gap-4">
 
                     <div class="flex items-center gap-3">
-
                         {{ form.is_cancellable }}
-
                         <label class="text-sm font-medium">
                             Cancellable
                         </label>
-
                     </div>
 
                     <div class="flex items-center gap-3">
-
                         {{ form.is_returnable }}
-
                         <label class="text-sm font-medium">
                             Returnable
                         </label>
-
                     </div>
 
                 </div>
 
 
-
                 <div>
-
                     <label class="block text-sm font-semibold mb-2">
                         Return Days
                     </label>
-
                     {{ form.return_days }}
-
                 </div>
-
 
 
                 <!-- STATUS TOGGLE -->
@@ -240,21 +221,21 @@ hover:bg-gray-50 transition">
 
                         <label class="relative inline-flex items-center cursor-pointer">
 
-                            <input type="checkbox" id="statusToggle" class="sr-only peer" checked>
-
+                            <input type="checkbox" id="statusToggle" class="sr-only peer" {% if product.status!="INACTIVE"
+                                %} checked>
                             <div class="w-11 h-6 bg-gray-200 rounded-full peer
-peer-checked:bg-primary
-after:content-['']
-after:absolute
-after:top-[2px]
-after:left-[2px]
-after:bg-white
-after:border
-after:rounded-full
-after:h-5
-after:w-5
-after:transition-all
-peer-checked:after:translate-x-full">
+                        peer-checked:bg-primary
+                        after:content-['']
+                        after:absolute
+                        after:top-[2px]
+                        after:left-[2px]
+                        after:bg-white
+                        after:border
+                        after:rounded-full
+                        after:h-5
+                        after:w-5
+                        after:transition-all
+                        peer-checked:after:translate-x-full">
                             </div>
 
                         </label>
@@ -267,14 +248,13 @@ peer-checked:after:translate-x-full">
 
                 </div>
 
-                <input type="hidden" name="status" id="statusInput" value="ACTIVE">
-
+                <input type="hidden" name="status" id="statusInput" value="{{ product.status }}">
 
 
                 <button type="submit"
                     class="w-full bg-primary text-black font-bold py-4 rounded-xl hover:opacity-90 transition">
 
-                    Publish Product
+                    Update Product
 
                 </button>
 
@@ -298,12 +278,14 @@ peer-checked:after:translate-x-full">
 
                 preview.src = URL.createObjectURL(file)
                 preview.classList.remove("hidden")
-                text.classList.add("hidden")
+
+                if (text) {
+                    text.classList.add("hidden")
+                }
 
             }
 
         }
-
 
         const toggle = document.getElementById("statusToggle")
         const statusInput = document.getElementById("statusInput")
@@ -311,13 +293,9 @@ peer-checked:after:translate-x-full">
         toggle.addEventListener("change", function () {
 
             if (this.checked) {
-
                 statusInput.value = "ACTIVE"
-
             } else {
-
                 statusInput.value = "INACTIVE"
-
             }
 
         })

@@ -17,7 +17,11 @@ class SellerProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.store_name
+        if self.store_name:
+            return self.store_name
+        return self.user.username
+
+
 
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -28,12 +32,30 @@ class Product(models.Model):
     description = models.TextField()
     brand = models.CharField(max_length=100)
     model_number = models.CharField(max_length=100)
+
+    # status = models.CharField(
+    #     max_length=10,
+    #     choices=STATUS_CHOICES,
+    #     default='ACTIVE'
+    # )
+
     is_cancellable = models.BooleanField(default=True)
     is_returnable = models.BooleanField(default=True)
     return_days = models.IntegerField(default=7)
-    approval_status = models.CharField(max_length=20, choices=(('PENDING', 'Pending'), ('APPROVED', 'Approved'), ('REJECTED', 'Rejected')), default='PENDING')
+
+    approval_status = models.CharField(
+        max_length=20,
+        choices=(
+            ('PENDING', 'Pending'),
+            ('APPROVED', 'Approved'),
+            ('REJECTED', 'Rejected')
+        ),
+        default='PENDING'
+    )
+
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)

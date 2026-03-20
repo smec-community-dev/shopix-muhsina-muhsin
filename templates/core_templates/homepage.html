@@ -1,20 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="bg-gray-100">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopix - Online Shopping</title>
+    <title>Shopix | Premium Online Shopping</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
         :root {
             --color-dark: #343131;
-            --color-red-accent: #A04747;
-            --color-gold-accent: #D8A25E;
-            --color-cream-accent: #EEDF7A;
+            --color-red: #A04747;
+            --color-gold: #D8A25E;
+            --color-cream: #EEDF7A;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfcfc;
+            color: var(--color-dark);
+            -webkit-font-smoothing: antialiased;
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -24,7 +33,7 @@
     </style>
 </head>
 
-<body class="font-sans flex flex-col min-h-screen text-[#343131]">
+<body class="flex flex-col min-h-screen">
 
     <header class="bg-[#000] sticky top-0 z-50">
         <div class="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
@@ -35,28 +44,34 @@
             </a>
 
             <div class="flex-1 max-w-4xl flex items-center hidden sm:flex">
-                <form action="" method="GET"
+                <form action="{% url 'search' %}" method="GET"
                     class="w-full flex rounded-md overflow-hidden border border-transparent focus-within:border-[#D8A25E] transition-colors">
-                    <select class="bg-gray-100 text-gray-700 px-3 py-2.5 text-sm border-r border-gray-300 focus:outline-none cursor-pointer hidden md:block">
-                        <option>All</option>
-                        <option>Electronics</option>
-                        <option>Fashion</option>
+                    <select name="category" class="bg-gray-100 text-gray-700 px-3 py-2.5 text-sm border-r border-gray-300 focus:outline-none cursor-pointer hidden md:block">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
                     </select>
                     <input type="text" name="q" placeholder="Search for products, brands and more" required
-                        class="w-full px-4 py-2.5 text-gray-900 focus:outline-none">
+                        class="w-full px-4 py-2.5 text-gray-900 focus:outline-none" value="{{ request.GET.q }}">
                     <button type="submit" class="bg-[#A04747] hover:bg-[#8c3d3d] text-white px-6 py-2.5 flex items-center justify-center transition-colors">
                         <span class="material-icons">search</span>
                     </button>
                 </form>
             </div>
 
-            <div class="flex items-center space-x-4 md:space-x-6 flex-shrink-0 text-white">
+            <div class="flex items-center gap-4 md:gap-6 text-white">
+                
+                <a href="{% url 'products' %}" class="hidden md:flex flex-col justify-center hover:text-[#D8A25E] transition-colors py-2">
+                    <span class="text-sm font-bold flex items-center gap-1">
+                        <span class="material-icons text-[16px]">inventory_2</span> All Products
+                    </span>
+                </a>
 
                 {% if user.is_authenticated %}
                 <div class="relative group hidden md:block">
                     <a href="{% url 'profile' %}"
                         class="flex flex-col hover:text-[#D8A25E] transition-colors cursor-pointer py-2">
-                        <span class="text-xs text-gray-300">Hello, {{ user.first_name|default:user.username }}</span>
+                        <span class="text-[11px] text-gray-400 font-medium">Hello, {{ user.first_name|default:user.username }}</span>
                         <span class="text-sm font-bold flex items-center gap-1">
                             Account & Lists
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,12 +81,10 @@
                     </a>
                     <div class="absolute right-0 mt-1 w-64 bg-white rounded-md shadow-xl overflow-hidden z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 border border-gray-200 origin-top text-[#343131]">
                         <div class="p-2 flex flex-col max-h-[70vh] overflow-y-auto hide-scrollbar">
-
                             <div class="px-4 py-3 mb-1 border-b border-gray-200">
                                 <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Signed in as</p>
                                 <p class="text-sm font-extrabold truncate text-[#A04747]">{{ user.username }}</p>
                             </div>
-
                             <a href="{% url 'profile' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-50 hover:text-[#A04747] transition-colors group/item">
                                 <span class="material-icons text-[18px] text-gray-400 group-hover/item:text-[#A04747] transition-colors">badge</span>
                                 <span class="font-bold text-sm">My Profile</span>
@@ -88,9 +101,7 @@
                                 <span class="material-icons text-[18px] text-gray-400 group-hover/item:text-[#A04747] transition-colors">notifications</span>
                                 <span class="font-bold text-sm">Notification</span>
                             </a>
-
                             <div class="border-t border-gray-200 my-1"></div>
-
                             <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors group/item">
                                 <span class="material-icons text-[18px] text-red-400 group-hover/item:text-red-700 transition-colors">logout</span>
                                 <span class="font-bold text-sm">Logout</span>
@@ -99,13 +110,19 @@
                     </div>
                 </div>
                 {% else %}
-                <a href="{% url 'login' %}" class="hover:text-[#D8A25E] font-bold transition-colors text-sm">Sign In</a>
-                <a href="{% url 'buyerregister' %}" class="hover:text-[#D8A25E] font-bold transition-colors text-sm">Sign Up</a>
+                <div class="flex flex-col justify-center py-2">
+                    <span class="text-[11px] text-gray-400 font-medium">Welcome</span>
+                    <div class="flex items-center gap-2">
+                        <a href="{% url 'login' %}" class="hover:text-[#D8A25E] font-bold transition-colors text-sm">Sign In</a>
+                        <span class="text-gray-600 text-xs">|</span>
+                        <a href="{% url 'buyerregister' %}" class="hover:text-[#D8A25E] font-bold transition-colors text-sm">Sign Up</a>
+                    </div>
+                </div>
                 {% endif %}
 
                 <div class="relative group hidden md:block">
-                    <button class="flex flex-col items-center hover:text-[#D8A25E] transition-colors cursor-pointer focus:outline-none py-2">
-                        <span class="text-xs text-gray-300">Discover</span>
+                    <button class="flex flex-col justify-center hover:text-[#D8A25E] transition-colors cursor-pointer focus:outline-none py-2">
+                        <span class="text-[11px] text-gray-400 font-medium">Discover</span>
                         <span class="text-sm font-bold flex items-center gap-1">More <span class="material-icons text-xs">expand_more</span></span>
                     </button>
                     <div class="absolute right-0 mt-1 w-56 bg-white rounded-md shadow-xl z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all border border-gray-200 text-[#343131]">
@@ -137,17 +154,17 @@
         </div>
     </header>
 
-    <main class="max-w-[1600px] mx-auto w-full px-2 sm:px-4 py-6 space-y-6">
+    <main class="max-w-[1600px] mx-auto w-full px-2 sm:px-4 py-6 space-y-6 flex-grow">
         <div class="w-full h-48 md:h-80 bg-[#343131] rounded-xl flex items-center justify-between px-8 md:px-16 overflow-hidden relative shadow-md">
             <div class="absolute inset-0 opacity-20">
                 <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <polygon fill="#A04747" points="0,100 100,0 100,100" />
+                    <polygon fill="#A04747" points="100,0 100,100 20,100" />
                 </svg>
             </div>
             <div class="relative z-10 text-white">
                 <h2 class="text-3xl md:text-5xl font-extrabold text-[#EEDF7A] mb-2 uppercase tracking-tighter">The Big Shopix Sale</h2>
                 <p class="text-lg md:text-2xl font-medium mb-6 opacity-90 italic">Up to 60% off on top brands.</p>
-                <a href="#" class="bg-[#A04747] hover:bg-[#D8A25E] text-white hover:text-[#343131] px-8 py-3 rounded-md font-black transition-all uppercase tracking-widest shadow-lg">Shop Now</a>
+                <a href="{% url 'search' %}" class="bg-[#A04747] hover:bg-[#D8A25E] text-white hover:text-[#343131] px-8 py-3 rounded-md font-black transition-all uppercase tracking-widest shadow-lg inline-block">Shop Now</a>
             </div>
             <div class="hidden md:block relative z-10 text-[#D8A25E] opacity-50">
                 <span class="material-icons text-[150px]">local_mall</span>
@@ -157,7 +174,7 @@
         <section class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
             <div class="flex items-center justify-between mb-6 border-b pb-4 border-gray-100">
                 <h3 class="text-2xl font-black text-[#343131] uppercase tracking-tighter">Deals of the Day</h3>
-                <a href="#" class="text-[#A04747] font-bold hover:text-[#D8A25E] transition-colors text-sm uppercase tracking-widest">See all deals</a>
+                <a href="{% url 'search' %}" class="text-[#A04747] font-bold hover:text-[#D8A25E] transition-colors text-sm uppercase tracking-widest">See all deals</a>
             </div>
 
             <div class="flex gap-6 overflow-x-auto pb-6 no-scrollbar snap-x">
@@ -184,7 +201,7 @@
                         <span class="material-icons-round text-xl">
                             {% if variant.id in user_wishlist_ids %}favorite{% else %}favorite_border{% endif %}
                         </span>
-                    </a>
+                        </a>
                     </div>
 
                     <a href="{% url 'variant_page' variant.id %}" class="block relative aspect-video mb-6 overflow-hidden rounded-2xl bg-black/40 border border-white/5">
@@ -220,22 +237,31 @@
     </main>
 
     <footer class="bg-[#343131] text-white mt-auto">
-        <div class="bg-[#4a4747] hover:bg-[#5a5757] text-center py-4 cursor-pointer transition-colors" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <span class="font-black text-xs uppercase tracking-[0.3em]">Back to top</span>
+        <div class="bg-[#4a4747] hover:bg-[#5a5757] text-center py-4 cursor-pointer transition-colors"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <span class="font-bold text-sm">Back to top</span>
         </div>
-        <div class="max-w-[1600px] mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-12 text-sm">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
             <div>
-                <h4 class="font-black mb-6 text-[#EEDF7A] uppercase tracking-widest border-b border-white/10 pb-2 inline-block">Company</h4>
-                <ul class="space-y-3 text-gray-400 font-medium">
-                    <li><a href="#" class="hover:text-white transition-colors">About Shopix</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                <h4 class="font-bold mb-4 text-[#EEDF7A]">Get to Know Us</h4>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:underline">About Shopix</a></li>
+                    <li><a href="#" class="hover:underline">Careers</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-4 text-[#EEDF7A]">Make Money</h4>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:underline">Sell on Shopix</a></li>
+                    <li><a href="#" class="hover:underline">Affiliate</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-black mb-6 text-[#EEDF7A] uppercase tracking-widest border-b border-white/10 pb-2 inline-block">Partner</h4>
-                <ul class="space-y-3 text-gray-400 font-medium">
-                    <li><a href="{% url 'sellerregister' %}" class="hover:text-white transition-colors">Sell on Shopix</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Affiliate Program</a></li>
+                <h4 class="font-bold mb-4 text-[#EEDF7A]">Help</h4>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:underline">Your Account</a></li>
+                    <li><a href="#" class="hover:underline">Returns</a></li>
                 </ul>
             </div>
         </div>
