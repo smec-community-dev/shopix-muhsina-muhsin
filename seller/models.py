@@ -2,6 +2,8 @@ from django.db import models
 from core.models import User, SubCategory
 from django.utils.text import slugify
 
+
+# ================= SELLER =================
 class SellerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="seller_profile")
     store_name = models.CharField(max_length=255)
@@ -15,8 +17,11 @@ class SellerProfile(models.Model):
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.store_name
 
 
+# ================= PRODUCT =================
 class Product(models.Model):
 
     STATUS_CHOICES = (
@@ -27,7 +32,7 @@ class Product(models.Model):
     seller = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, related_name="products")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name="products")
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
     brand = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
@@ -38,10 +43,6 @@ class Product(models.Model):
         choices=STATUS_CHOICES,
         default='ACTIVE'
     )
-
-    is_cancellable = models.BooleanField(default=True)
-    is_returnable = models.BooleanField(default=True)
-    return_days = models.IntegerField(default=7)
 
     approval_status = models.CharField(
         max_length=20,
@@ -73,20 +74,37 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
+# ================= VARIANT =================
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")
     sku_code = models.CharField(max_length=100, unique=True)
+
     mrp = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     cost_price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock_quantity = models.IntegerField()
-    weight = models.FloatField(help_text="Weight in kg")
-    length = models.FloatField(help_text="Length in cm")
-    width = models.FloatField(help_text="Width in cm")
-    height = models.FloatField(help_text="Height in cm")
-    tax_percentage = models.FloatField()
+
+    stock_quantity = models.IntegerField(default=0)
+
+    # ✅ FIXED: OPTIONAL FIELDS
+    weight = models.FloatField(null=True, blank=True, help_text="Weight in kg")
+    length = models.FloatField(null=True, blank=True, help_text="Length in cm")
+    width = models.FloatField(null=True, blank=True, help_text="Width in cm")
+    height = models.FloatField(null=True, blank=True, help_text="Height in cm")
+
+    tax_percentage = models.FloatField(default=0)
+
+    is_cancellable = models.BooleanField(default=True)
+    is_returnable = models.BooleanField(default=True)
+    return_days = models.IntegerField(default=7)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.sku_code
+
+
+# ================= PRODUCT IMAGE =================
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
     image = models.ImageField(upload_to="productimages/")
@@ -94,22 +112,40 @@ class ProductImage(models.Model):
     is_primary = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.product.name
-    
+        return f"{self.product.name} Image"
+
+
+# ================= ATTRIBUTES =================
 class Attribute(models.Model):
-    name = models.CharField(max_length=100) # e.g., Color, Size
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 
 class AttributeOption(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="options")
-    value = models.CharField(max_length=100) # e.g., Red, XL
+    value = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.attribute.name} - {self.value}"
+
 
 class VariantAttributeBridge(models.Model):
     variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
     option = models.ForeignKey(AttributeOption, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.variant.sku_code} - {self.option.value}"
+
+
+# ================= INVENTORY =================
 class InventoryLog(models.Model):
     variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
     change_amount = models.IntegerField()
     reason = models.CharField(max_length=50)
     performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.variant.sku_code} ({self.change_amount})"
