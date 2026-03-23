@@ -133,10 +133,10 @@
                 </div>
 
                 {% if cart_items %}
-                <button class="w-full bg-[#A04747] hover:bg-[#8c3d3d] text-white font-black py-5 rounded-2xl mt-10 transition-all transform hover:scale-[1.02] active:scale-95 shadow-xl flex items-center justify-center gap-3">
-                    CHECKOUT NOW
+                <a href="{% url 'checkout' cart.id %}" class="w-full bg-[#A04747] hover:bg-[#8c3d3d] text-white font-black py-5 rounded-2xl mt-10 transition-all transform hover:scale-[1.02] active:scale-95 shadow-xl flex items-center justify-center gap-3">
+                        CHECKOUT NOW
                     <span class="material-icons">arrow_forward</span>
-                </button>
+                </a>
                 {% else %}
                 <button disabled class="w-full bg-white/10 text-white/30 font-black py-5 rounded-2xl mt-10 cursor-not-allowed uppercase tracking-widest text-sm">
                     Cart Empty

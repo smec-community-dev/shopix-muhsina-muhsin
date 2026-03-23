@@ -1,0 +1,172 @@
+{% extends 'base.html' %} {% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-8">
+            
+            <div class="bg-white shadow rounded-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Shipping Address</h2>
+                    <a href="{% url 'customer_add_address' %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">+ Add New Address</a>
+                </div>
+
+                {% if addresses %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for address in addresses %}
+                        <div class="relative border rounded-lg p-4 cursor-pointer transition-all duration-200 {% if address.id == default_address.id %}border-blue-500 bg-blue-50 ring-1 ring-blue-500{% else %}border-gray-200 hover:border-blue-300{% endif %}">
+                            
+                            {% if address.id == default_address.id %}
+                            <span class="absolute top-4 right-4 text-blue-600 bg-blue-100 text-xs px-2 py-1 rounded font-semibold">Default</span>
+                            {% endif %}
+
+                            <p class="font-medium text-gray-900">{{ address.full_name }}</p>
+                            <p class="text-sm text-gray-600 mt-1">{{ address.street_address }}</p>
+                            <p class="text-sm text-gray-600">{{ address.city }}, {{ address.state }} {{ address.postal_code }}</p>
+                            <p class="text-sm text-gray-600 mt-2">📞 {{ address.phone_number }}</p>
+
+                            {% if address.id != default_address.id %}
+                            <div class="mt-4">
+                                <a href="{% url 'order_select_address' address.id %}?{% if not is_cart_checkout %}product_id={{ order.product.id }}{% endif %}" class="text-sm text-blue-600 hover:underline">
+                                    Set as Delivery Address
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-4 bg-yellow-50 text-yellow-800 rounded-lg">
+                        You don't have any saved addresses. Please add one to continue.
+                    </div>
+                {% endif %}
+            </div>
+
+            <form action="{% url 'place_order' %}" method="POST" id="checkout-form">
+                {% csrf_token %}
+                
+                {% if is_cart_checkout %}
+                    <input type="hidden" name="cart_id" value="{{ cart.id }}">
+                {% else %}
+                    <input type="hidden" name="variant_id" value="{{ order.id }}">
+                {% endif %}
+
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Payment Method</h2>
+                    <div class="space-y-3">
+                        <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="payment_method" value="COD" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" required checked>
+                            <span class="ml-3 font-medium text-gray-900">Cash on Delivery (COD)</span>
+                        </label>
+                        <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="payment_method" value="CARD" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" required>
+                            <span class="ml-3 font-medium text-gray-900">Credit / Debit Card</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" id="place-order-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition duration-200 flex justify-center items-center">
+                        <span id="btn-text">Place Order</span>
+                        <svg id="btn-spinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="bg-white shadow rounded-lg p-6 sticky top-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Order Summary</h2>
+
+                <div class="space-y-4 mb-6 max-h-96 overflow-y-auto pr-2">
+                    {% if is_cart_checkout %}
+                        {% for item in cart_items %}
+                        <div class="flex items-center justify-between pb-4 border-b">
+                            <div class="flex items-center space-x-4">
+                                {% if item.variant.product.image %}
+                                <img src="{{ item.variant.product.image.url }}" alt="{{ item.variant.product.name }}" class="w-16 h-16 object-cover rounded">
+                                {% endif %}
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900 line-clamp-2">{{ item.variant.product.name }}</h3>
+                                    <p class="text-xs text-gray-500">Qty: {{ item.quantity }}</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">₹{{ item.price_at_time }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center justify-between pb-4 border-b">
+                            <div class="flex items-center space-x-4">
+                                {% if order.product.image %}
+                                <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" class="w-16 h-16 object-cover rounded">
+                                {% endif %}
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900 line-clamp-2">{{ order.product.name }}</h3>
+                                    <p class="text-xs text-gray-500">Qty: 1</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">₹{{ order.selling_price }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="space-y-3 text-sm text-gray-600 pb-4 border-b">
+                    {% if is_cart_checkout %}
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span>₹{{ subtotal }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tax (8%)</span>
+                            <span>₹{{ tax }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping</span>
+                            <span class="text-green-600">Free</span>
+                        </div>
+                    {% else %}
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span>₹{{ order.selling_price }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="flex justify-between items-center mt-4 pt-2">
+                    <span class="text-lg font-bold text-gray-900">Total</span>
+                    <span class="text-xl font-bold text-gray-900">
+                        ₹{% if is_cart_checkout %}{{ grand_total }}{% else %}{{ order.selling_price }}{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // JS to prevent duplicate form submissions and show loading state
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        const btn = document.getElementById('place-order-btn');
+        const btnText = document.getElementById('btn-text');
+        const spinner = document.getElementById('btn-spinner');
+        
+        // Ensure a default address exists (handled mostly by backend, but good for UX)
+        const defaultAddressExists = "{{ default_address|yesno:'true,false' }}";
+        if (defaultAddressExists === 'false') {
+            e.preventDefault();
+            alert("Please add a delivery address before placing an order.");
+            return;
+        }
+
+        // Disable button to prevent double clicks
+        btn.classList.add('opacity-75', 'cursor-not-allowed');
+        btnText.textContent = 'Processing...';
+        spinner.classList.remove('hidden');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <div class="text-center mb-10">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+            <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <h1 class="text-3xl font-extrabold text-gray-900">Order Confirmed!</h1>
+        <p class="mt-2 text-lg text-gray-600">Thank you for your purchase. Your order number is <strong>{{ order.order_number }}</strong>.</p>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
+        <div class="px-4 py-5 sm:px-6 flex justify-between items-center bg-gray-50 border-b border-gray-200">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Order Information</h3>
+            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                Processing
+            </span>
+        </div>
+        
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+            <dl class="sm:divide-y sm:divide-gray-200">
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Date Placed</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ order.created_at|date:"F j, Y, g:i a" }}</dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Total Amount</dt>
+                    <dd class="mt-1 text-sm font-bold text-gray-900 sm:mt-0 sm:col-span-2">₹{{ order.total_amount }}</dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Payment Method</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ order.payment_method }}</dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">Shipping Address</dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <p>{{ order.address.full_name }}</p>
+                        <p>{{ order.address.street_address }}</p>
+                        <p>{{ order.address.city }}, {{ order.address.state }} {{ order.address.postal_code }}</p>
+                        <p>Phone: {{ order.address.phone_number }}</p>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold text-gray-900 mb-4">Items in your order</h2>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <ul role="list" class="divide-y divide-gray-200">
+            {% for item in order_item %}
+            <li class="p-4 sm:px-6 flex items-center py-5">
+                {% if item.variant.product.image %}
+                    <img src="{{ item.variant.product.image.url }}" alt="{{ item.variant.product.name }}" class="h-16 w-16 rounded-md object-cover border border-gray-200">
+                {% else %}
+                    <div class="h-16 w-16 rounded-md bg-gray-200 flex items-center justify-center text-gray-500 text-xs border border-gray-200">No Img</div>
+                {% endif %}
+                
+                <div class="ml-6 flex-1">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-medium text-gray-900">{{ item.variant.product.name }}</h4>
+                        <p class="text-sm font-medium text-gray-900">₹{{ item.price_at_purchase }}</p>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between">
+                        <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
+                        <p class="text-sm text-gray-500">Seller: {{ item.seller.name|default:"Retailer" }}</p>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mt-10 flex space-x-4 justify-center">
+        <a href="{% url 'home' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition">
+            Continue Shopping
+        </a>
+        <a href="{% url 'customer_orders' %}" class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition">
+            View My Orders
+        </a>
+    </div>
+</div>
+{% endblock %}
