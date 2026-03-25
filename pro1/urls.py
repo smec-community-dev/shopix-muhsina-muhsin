@@ -25,6 +25,7 @@ urlpatterns = [
     path('',include('admin_app.urls')),
     path('',include('seller.urls')),
     path('',include('customer.urls')),
+    path('accounts/', include('allauth.urls')),
 
 ]
 if settings.DEBUG:

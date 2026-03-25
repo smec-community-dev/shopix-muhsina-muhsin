@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Seller Dashboard | Shopix{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body x-data="{ showProfile: false }" class="bg-gray-50 text-gray-900">
+
+    <div class="flex min-h-screen">
+
+        <!-- Sidebar -->
+        <aside class="w-64 hidden lg:flex flex-col fixed top-0 left-0 h-screen bg-white border-r border-gray-100 z-40">
+
+            <!-- Logo -->
+            <div class="h-16 flex items-center px-5 border-b border-gray-100">
+                <img src="{% static 'images/shopix_seller.png' %}" alt="Shopix Logo"
+                    class="h-full w-full object-contain py-2" />
+            </div>
+
+            <nav class="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
+                <p class="text-xs font-bold text-orange-500 uppercase tracking-widest px-3 mb-3">Main Menu</p>
+
+                <a href="{% url 'sellerhome' %}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all 
+        {% if request.resolver_match.url_name == 'sellerhome' %} bg-amber-50 text-amber-700 {% else %} text-gray-600 hover:bg-gray-50 {% endif %}">
+                    <span class="material-icons-round text-[20px]">dashboard</span>
+                    Dashboard
+                </a>
+
+                <a href="{% url 'productlist' %}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all 
+        {% if request.resolver_match.url_name == 'productlist' %} bg-amber-50 text-amber-700 {% else %} text-gray-600 hover:bg-gray-50 {% endif %}">
+                    <span class="material-icons-round text-[20px]">inventory_2</span>
+                    Inventory
+                </a>
+
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all 
+        {% if request.resolver_match.url_name == 'orders' %} bg-amber-50 text-amber-700 {% else %} text-gray-600 hover:bg-gray-50 {% endif %}">
+                    <span class="material-icons-round text-[20px]">shopping_bag</span>
+                    Orders
+                </a>
+
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all 
+        {% if request.resolver_match.url_name == 'earnings' %} bg-amber-50 text-amber-700 {% else %} text-gray-600 hover:bg-gray-50 {% endif %}">
+                    <span class="material-icons-round text-[20px]">payments</span>
+                    Earnings
+                </a>
+
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all 
+        {% if request.resolver_match.url_name == 'analytics' %} bg-amber-50 text-amber-700 {% else %} text-gray-600 hover:bg-gray-50 {% endif %}">
+                    <span class="material-icons-round text-[20px]">insights</span>
+                    Analytics
+                </a>
+            </nav>
+            <!-- Upgrade Card -->
+            <div class="m-4 bg-gray-900 rounded-2xl p-5 relative overflow-hidden">
+                <div class="absolute -right-3 -top-3 w-16 h-16 bg-amber-400/20 rounded-full blur-xl"></div>
+                <p class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">Enterprise</p>
+                <p class="text-xs text-gray-400 mb-4 leading-relaxed">Unlock AI insights & advanced analytics.</p>
+                <button
+                    class="w-full py-2 bg-amber-400 text-gray-900 text-xs font-black rounded-xl hover:bg-amber-300 transition-colors">
+                    Upgrade Now
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 lg:ml-64 flex flex-col min-h-screen">
+
+            <!-- Header -->
+            <header
+                class="h-16 bg-white border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-30">
+                <h2 class="text-base font-bold text-gray-900">{% block page_title %}Dashboard{% endblock %}</h2>
+
+                <div class="flex items-center gap-4">
+                    <!-- Search -->
+                    <div class="relative hidden md:block">
+                        <span
+                            class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+                        <input type="text" placeholder="Search..."
+                            class="bg-gray-50 border border-gray-100 rounded-xl py-2 pl-9 pr-4 text-xs w-52 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-300 transition-all">
+                    </div>
+
+                    <!-- Notifications -->
+                    <button
+                        class="relative w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 rounded-xl transition-all">
+                        <span class="material-icons-round text-[20px]">notifications</span>
+                        <span class="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <div class="w-px h-6 bg-gray-100"></div>
+
+                    <!-- Profile -->
+                    <div class="relative flex items-center gap-2.5 cursor-pointer" @click="showProfile = !showProfile">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs font-bold text-gray-800 leading-none">{{ seller_profile.store_name|default:"Seller Admin" }}</p>
+                            <p class="text-[10px] text-amber-500 font-semibold mt-0.5">Verified Store</p>
+                        </div>
+                        <div
+                            class="w-9 h-9 rounded-xl bg-gray-900 flex items-center justify-center hover:bg-amber-500 transition-colors">
+                            <span class="material-icons-round text-white text-[18px]">person</span>
+                        </div>
+
+                        <div x-show="showProfile" @click.outside="showProfile = false"
+                            class="absolute right-0 top-12 w-44 bg-white border border-gray-100 rounded-2xl p-1.5 z-50 shadow-xl"
+                            style="display:none;">
+                            <a href="#"
+                                class="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 rounded-xl transition-all">
+                                <span class="material-icons-round text-[16px]">settings</span> Settings
+                            </a>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    class="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                                    <span class="material-icons-round text-[16px]">logout</span> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 p-8">
+                {% block content %}{% endblock %}
+            </main>
+
+        </div>
+    </div>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

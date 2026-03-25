@@ -7,8 +7,10 @@ from datetime import timedelta
 from django.db.models import Q
 from customer.models import *
 from .models import *
-
 from seller.models import Product, SellerProfile, ProductVariant
+import random
+from django.core.mail import send_mail
+from django.conf import settings
 
 User = get_user_model()
 
@@ -58,22 +60,27 @@ def customer_register(request):
             messages.error(request, 'Phone number already registered.')
             return render(request, 'core_templates/customer_register.html')
 
-        try:
-            user = User.objects.create_user(
-                username=email,
-                email=email,
-                password=password,
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone
-            )
+        otp = str(random.randint(100000, 999999))
 
-            messages.success(request, 'Customer registration successful.')
-            return redirect('login')
+        request.session['register_data'] = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'phone': phone,
+            'password': password,
+            'role': 'CUSTOMER'
+        }
+        request.session['otp'] = otp
 
-        except Exception as e:
-            messages.error(request, f'Error: {e}')
-            return render(request, 'core_templates/customer_register.html')
+        send_mail(
+            'Your OTP Code',
+            f'Your OTP is {otp}',
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+
+        return redirect('verify_otp')
 
     return render(request, 'core_templates/customer_register.html')
 
@@ -98,27 +105,65 @@ def seller_register(request):
             messages.error(request, 'Phone number already registered.')
             return render(request, 'core_templates/seller_register.html')
 
-        try:
-            user = User.objects.create_user(
-                username=email,
-                email=email,
-                password=password,
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone,
-                role='SELLER' 
-            )
+        otp = str(random.randint(100000, 999999))
 
-            SellerProfile.objects.create(user=user)
+        request.session['register_data'] = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'phone': phone,
+            'password': password,
+            'role': 'SELLER'
+        }
 
-            messages.success(request, 'Seller registration successful. You can now log in.')
-            return redirect('login')
+        request.session['otp'] = otp
 
-        except Exception as e:
-            messages.error(request, f'Error: {e}')
-            return render(request, 'core_templates/seller_register.html')
+        send_mail(
+            'Your OTP Code',
+            f'Your OTP is {otp}',
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+
+        messages.success(request, 'OTP sent to your email. Please verify.')
+        return redirect('verify_otp')
 
     return render(request, 'core_templates/seller_register.html')
+
+def verify_otp(request):
+    if request.method == "POST":
+        entered_otp = request.POST.get('otp')
+        session_otp = request.session.get('otp')
+        data = request.session.get('register_data')
+
+        if not session_otp or not data:
+            messages.error(request, "Session expired. Please register again.")
+            return redirect('customer_register')
+
+        if entered_otp == session_otp:
+
+            user = User.objects.create_user(
+                username=data['email'],
+                email=data['email'],
+                password=data['password'],
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                phone_number=data['phone'],
+                role=data['role']
+            )
+
+            if data['role'] == 'SELLER':
+                SellerProfile.objects.create(user=user)
+
+            request.session.flush()
+
+            messages.success(request, "Account created successfully!")
+            return redirect('login')
+        else:
+            messages.error(request, "Invalid OTP")
+
+    return render(request, 'core_templates/verify_otp.html')
 
 
 def logout_view(request):

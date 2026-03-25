@@ -36,6 +36,15 @@
 <body class="flex flex-col min-h-screen">
 
     <header class="bg-[#000] sticky top-0 z-50">
+        <div class="bg-[#343131] text-white py-2 px-6 text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">
+        <div class="max-w-[1600px] mx-auto flex justify-between items-center">
+            <span>Free Express Shipping on Orders Over ₹5000</span>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-[#D8A25E] transition-colors">Track Order</a>
+                <a href="{% url 'sellerregister' %}" class="text-[#EEDF7A] hover:brightness-110">Sell on Shopix</a>
+            </div>
+        </div>
+    </div>
         <div class="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
 
             <a href="{% url 'dashboard' %}" class="flex items-center gap-2 flex-shrink-0">
@@ -58,7 +67,7 @@
                     </button>
                 </form>
             </div>
-
+            
             <div class="flex items-center gap-4 md:gap-6 text-white">
                 
                 <a href="{% url 'products' %}" class="hidden md:flex flex-col justify-center hover:text-[#D8A25E] transition-colors py-2">
@@ -120,7 +129,7 @@
                 </div>
                 {% endif %}
 
-                <div class="relative group hidden md:block">
+                <!-- <div class="relative group hidden md:block">
                     <button class="flex flex-col justify-center hover:text-[#D8A25E] transition-colors cursor-pointer focus:outline-none py-2">
                         <span class="text-[11px] text-gray-400 font-medium">Discover</span>
                         <span class="text-sm font-bold flex items-center gap-1">More <span class="material-icons text-xs">expand_more</span></span>
@@ -132,7 +141,7 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <a href="{% url 'cart' %}" class="flex items-center hover:text-[#D8A25E] transition-colors relative p-2">
                     <span class="material-icons text-3xl">shopping_cart</span>

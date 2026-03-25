@@ -1,0 +1,110 @@
+{% extends 'seller/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-white p-4 sm:p-8">
+    <div class="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-black tracking-tight">Order Management</h1>
+            <p class="text-gray-500 font-medium mt-1">Manage and track your customer sales.</p>
+        </div>
+        
+        <div class="flex gap-4">
+            <div class="bg-gray-50 border border-gray-100 p-4 rounded-2xl flex items-center gap-3 shadow-sm">
+                <span class="material-icons text-[#D8A25E]">pending_actions</span>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pending</p>
+                    <p class="text-lg font-bold text-black">{{ pending_count }}</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 border border-gray-100 p-4 rounded-2xl flex items-center gap-3 shadow-sm">
+                <span class="material-icons text-green-600">payments</span>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Revenue</p>
+                    <p class="text-lg font-bold text-black">${{ total_revenue }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-xl shadow-gray-100">
+            <div class="p-6 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="relative w-full sm:w-96">
+                    <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">search</span>
+                    <input type="text" placeholder="Search Order ID or Customer..." 
+                           class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:border-[#D8A25E] focus:ring-4 focus:ring-[#D8A25E]/10 transition-all text-sm outline-none">
+                </div>
+                <div class="flex gap-2">
+                    <button class="px-5 py-2.5 bg-black text-white text-xs font-bold rounded-xl flex items-center gap-2 hover:bg-gray-800 transition-all uppercase tracking-widest">
+                        <span class="material-icons text-sm">file_download</span> Export
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50/50">
+                        <tr>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Order ID</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Items</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Total</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for order in orders %}
+                        <tr class="hover:bg-gray-50/50 transition-colors group">
+                            <td class="px-6 py-5">
+                                <span class="text-sm font-bold text-black">#{{ order.id }}</span>
+                            </td>
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-8 w-8 rounded-full bg-[#D8A25E]/10 flex items-center justify-center text-[#D8A25E] font-bold text-xs">
+                                        {{ order.customer.name|slice:":1" }}
+                                    </div>
+                                    <span class="text-sm font-semibold text-gray-700">{{ order.customer.name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5 text-sm text-gray-500 font-medium">{{ order.created_at|date:"M d, Y" }}</td>
+                            <td class="px-6 py-5 text-sm text-gray-600 font-semibold">{{ order.total_items }} items</td>
+                            <td class="px-6 py-5 text-sm font-bold text-black">${{ order.total_amount }}</td>
+                            <td class="px-6 py-5">
+                                {% if order.status == 'Pending' %}
+                                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-black uppercase tracking-wider border border-amber-100">
+                                    Processing
+                                </span>
+                                {% elif order.status == 'Shipped' %}
+                                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider border border-blue-100">
+                                    In Transit
+                                </span>
+                                {% else %}
+                                <span class="px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-wider border border-green-100">
+                                    Delivered
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-5 text-right">
+                                <a href="{% url 'order_detail' order.id %}" class="inline-flex items-center gap-1 text-[10px] font-black text-black uppercase tracking-widest hover:text-[#D8A25E] transition-colors">
+                                    Details <span class="material-icons text-sm">chevron_right</span>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="px-6 py-20 text-center">
+                                <span class="material-icons text-4xl text-gray-200">shopping_bag</span>
+                                <p class="text-gray-400 font-bold mt-2 uppercase text-xs tracking-widest">No orders found yet</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

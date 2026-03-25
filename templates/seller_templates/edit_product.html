@@ -1,307 +1,213 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'seller_templates/base.html' %}
+{% load static %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>E-SHOP | Edit Product</title>
+{% block title %}Edit Product | Shopix Seller{% endblock %}
+{% block page_title %}Edit Product{% endblock %}
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+{% block content %}
+<div class="max-w-6xl mx-auto w-full">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#FFBF00",
-                    },
-                },
-            },
-        }
-    </script>
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} font-medium shadow-sm">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-    <style>
-        input[type=file] {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body class="bg-gray-50 text-gray-800 font-sans p-6 md:p-10">
-
-    <form method="POST" action="{% url 'edit_product' product.slug %}" enctype="multipart/form-data"
-        class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-8">
-
+    <form method="POST" enctype="multipart/form-data"
+        class="bg-white rounded-2xl shadow-lg p-8"
+        action="{% url 'edit_product' product.slug %}">
         {% csrf_token %}
 
-        <div class="flex justify-between items-center mb-8 border-b pb-6">
+        {{ image_formset.management_form }}
 
+        <div class="flex justify-between items-center mb-8 border-b pb-6">
             <div>
                 <h1 class="text-3xl font-bold">
-                    Edit <span class="text-primary">Product</span>
+                    Edit <span class="text-amber-500">Product</span>
                 </h1>
-
-                <p class="text-sm text-gray-500">
-                    Update product details and images.
-                </p>
+                <p class="text-sm text-gray-500 mt-1">Update product details, images, and attributes.</p>
             </div>
-
-            <button type="submit"
-                class="px-6 py-2 border rounded-lg text-sm font-semibold hover:bg-gray-100 transition">
-                Save Changes
-            </button>
-
+            <div class="flex gap-3">
+                <a href="{% url 'sellerhome' %}" class="px-6 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition text-center min-w-[100px]">Cancel</a>
+                <button type="submit"
+                    class="px-6 py-2 bg-amber-500 text-white rounded-xl font-bold hover:opacity-90 transition shadow-md shadow-amber-200">
+                    Save Changes
+                </button>
+            </div>
         </div>
-
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-            <!-- IMAGE UPLOAD SECTION -->
+            <div class="grid grid-cols-2 gap-4 auto-rows-min">
+                {% for image_form in image_formset %}
+                <div class="image-card relative border rounded-xl p-4 flex flex-col items-center bg-gray-50 transition hover:border-amber-200">
 
-            <div>
-
-                <h2 class="text-sm font-bold text-primary uppercase tracking-widest mb-4">
-                    Product Images
-                </h2>
-
-                {{ formset.management_form }}
-
-                <div class="grid grid-cols-2 gap-4">
-
-                    {% for image_form in formset %}
-
-                    <div class="relative">
-
-                        {{ image_form.id }}
-
-                        <label class="w-full h-48 flex items-center justify-center
-                    border-2 border-dashed border-gray-300
-                    rounded-xl cursor-pointer hover:border-primary
-                    hover:bg-gray-50 transition">
-
-                            {% if image_form.instance.image %}
-
-                            <img src="{{ image_form.instance.image.url }}" id="preview{{ forloop.counter }}"
-                                class="absolute inset-0 w-full h-full object-cover rounded-xl">
-
-                            {% else %}
-
-                            <img id="preview{{ forloop.counter }}"
-                                class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
-
-                            {% endif %}
-
-                            <input type="file" name="{{ image_form.image.html_name }}"
-                                id="{{ image_form.image.id_for_label }}" accept="image/*"
-                                onchange="previewImage(event,'preview{{ forloop.counter }}')">
-
-                            <span class="text-gray-400 text-sm">
-                                Upload Image
-                            </span>
-
-                        </label>
-
-                        {% if image_form.instance.pk %}
-
-                        <div class="flex items-center gap-2 mt-2 text-xs text-red-500">
-                            {{ image_form.DELETE }}
-                            <label>Delete</label>
-                        </div>
-
+                    <div class="preview-container w-full h-40 mb-3 overflow-hidden rounded-xl border border-gray-200 shadow-sm bg-gray-200 flex items-center justify-center">
+                        {% if image_form.instance.image %}
+                            <img src="{{ image_form.instance.image.url }}" 
+                                 class="preview-target w-full h-40 object-cover">
+                        {% else %}
+                            <div class="preview-placeholder w-full h-full flex items-center justify-center text-gray-400">
+                                <span class="text-[10px] font-bold uppercase tracking-tighter">No Image Uploaded</span>
+                            </div>
                         {% endif %}
-
                     </div>
 
+                    <div class="w-full mb-3">
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest">Replace Image</label>
+                        <input type="file" 
+                               name="{{ image_form.image.html_name }}" 
+                               id="{{ image_form.image.auto_id }}"
+                               accept="image/*"
+                               class="image-input block w-full text-xs text-gray-500 
+                                      file:mr-3 file:py-2 file:px-4 
+                                      file:rounded-full file:border-0 
+                                      file:text-xs file:font-semibold 
+                                      file:bg-amber-50 file:text-amber-700 
+                                      hover:file:bg-amber-100 cursor-pointer">
+                        {% if image_form.image.errors %}
+                            <p class="text-red-500 text-[10px] mt-1">{{ image_form.image.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% if image_form.instance.pk %}
+                    <div class="w-full pt-2 border-t border-gray-200">
+                        <label class="flex items-center justify-center gap-2 cursor-pointer group">
+                            <input type="checkbox" name="{{ image_form.DELETE.html_name }}" 
+                                   id="{{ image_form.DELETE.auto_id }}"
+                                   class="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                            <span class="text-xs font-bold text-red-500 group-hover:text-red-700 transition">Remove Photo</span>
+                        </label>
+                    </div>
+                    {% endif %}
+                    
+                    {% for hidden in image_form.hidden_fields %}
+                        {{ hidden }}
                     {% endfor %}
-
                 </div>
-
+                {% endfor %}
             </div>
 
-
-            <!-- PRODUCT FORM SECTION -->
-
             <div class="space-y-6">
-
                 <div>
-                    <label class="block text-sm font-semibold mb-2">
-                        Product Name
-                    </label>
+                    <label class="block text-sm font-semibold mb-2 text-gray-700">Product Name</label>
                     {{ form.name }}
+                    {% if form.name.errors %}<p class="text-red-500 text-xs mt-1">{{ form.name.errors.as_text }}</p>{% endif %}
                 </div>
-
 
                 <div class="grid grid-cols-2 gap-4">
-
                     <div>
-                        <label class="block text-sm font-semibold mb-2">
-                            Brand
-                        </label>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Brand</label>
                         {{ form.brand }}
                     </div>
-
                     <div>
-                        <label class="block text-sm font-semibold mb-2">
-                            Model Number
-                        </label>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Model Number</label>
                         {{ form.model_number }}
                     </div>
-
                 </div>
 
-
-                <div>
-                    <label class="block text-sm font-semibold mb-2">
-                        Product Price
-                    </label>
-                    {{ form.price }}
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Price ($)</label>
+                        {{ form.price }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Subcategory</label>
+                        {{ form.subcategory }}
+                    </div>
                 </div>
 
-
                 <div>
-                    <label class="block text-sm font-semibold mb-2">
-                        Sub Category
-                    </label>
-                    {{ form.subcategory }}
-                </div>
-
-
-                <div>
-                    <label class="block text-sm font-semibold mb-2">
-                        Description
-                    </label>
+                    <label class="block text-sm font-semibold mb-2 text-gray-700">Description</label>
                     {{ form.description }}
                 </div>
 
-
-                <div class="grid grid-cols-2 gap-4">
-
-                    <div class="flex items-center gap-3">
-                        {{ form.is_cancellable }}
-                        <label class="text-sm font-medium">
-                            Cancellable
-                        </label>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        {{ form.is_returnable }}
-                        <label class="text-sm font-medium">
-                            Returnable
-                        </label>
-                    </div>
-
-                </div>
-
-
                 <div>
-                    <label class="block text-sm font-semibold mb-2">
-                        Return Days
-                    </label>
-                    {{ form.return_days }}
-                </div>
-
-
-                <!-- STATUS TOGGLE -->
-
-                <div class="flex items-center justify-between pt-2">
-
-                    <label class="text-sm font-semibold">
-                        Product Status
-                    </label>
-
-                    <div class="flex items-center gap-3">
-
-                        <span class="text-sm text-gray-500">
-                            Inactive
-                        </span>
-
-                        <label class="relative inline-flex items-center cursor-pointer">
-
-                            <input type="checkbox" id="statusToggle" class="sr-only peer" {% if product.status!="INACTIVE"
-                                %} checked>
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer
-                        peer-checked:bg-primary
-                        after:content-['']
-                        after:absolute
-                        after:top-[2px]
-                        after:left-[2px]
-                        after:bg-white
-                        after:border
-                        after:rounded-full
-                        after:h-5
-                        after:w-5
-                        after:transition-all
-                        peer-checked:after:translate-x-full">
-                            </div>
-
-                        </label>
-
-                        <span class="text-sm text-gray-500">
-                            Active
-                        </span>
-
+                    <h2 class="text-sm font-bold text-amber-500 uppercase mb-3 tracking-wide">Product Attributes</h2>
+                    <div class="grid grid-cols-2 gap-2">
+                        {% for option in attribute_form.fields.options.queryset %}
+                        <div class="flex items-center gap-2 p-2 border rounded-lg hover:bg-amber-50 transition cursor-pointer">
+                            <input type="checkbox" name="options" value="{{ option.id }}"
+                                id="opt-{{ option.id }}"
+                                {% if option in product.get_all_attribute_options %}checked{% endif %}
+                                class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500">
+                            <label for="opt-{{ option.id }}" class="text-xs text-gray-700 cursor-pointer flex-1">
+                                <span class="font-bold text-gray-900">{{ option.attribute.name }}:</span> {{ option.value }}
+                            </label>
+                        </div>
+                        {% endfor %}
                     </div>
-
                 </div>
 
-                <input type="hidden" name="status" id="statusInput" value="{{ product.status }}">
-
-
-                <button type="submit"
-                    class="w-full bg-primary text-black font-bold py-4 rounded-xl hover:opacity-90 transition">
-
-                    Update Product
-
-                </button>
+                <div class="flex items-center justify-between mt-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <label class="text-sm font-semibold text-gray-700">Listing Status</label>
+                    <div class="relative w-1/2">
+                         {{ form.status }}
+                    </div>
+                </div>
 
             </div>
-
         </div>
-
     </form>
+</div>
 
-
-
-    <script>
-
-        function previewImage(event, previewId) {
-
-            const file = event.target.files[0]
-            const preview = document.getElementById(previewId)
-            const text = preview.parentElement.querySelector("span")
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const fileInputs = document.querySelectorAll('.image-input');
+    
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function(e){
+            const file = e.target.files[0];
             if (file) {
+                // Find the parent card for THIS input
+                const card = input.closest('.image-card');
+                const previewContainer = card.querySelector('.preview-container');
+                let previewImg = card.querySelector('.preview-target');
+                const placeholder = card.querySelector('.preview-placeholder');
 
-                preview.src = URL.createObjectURL(file)
-                preview.classList.remove("hidden")
-
-                if (text) {
-                    text.classList.add("hidden")
+                // If currently showing a placeholder, swap it for an img tag
+                if (placeholder) {
+                    previewImg = document.createElement('img');
+                    previewImg.className = "preview-target w-full h-40 object-cover";
+                    placeholder.replaceWith(previewImg);
                 }
 
+                // Generate and apply the preview URL
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImg.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
             }
+        });
+    });
+});
+</script>
 
-        }
-
-        const toggle = document.getElementById("statusToggle")
-        const statusInput = document.getElementById("statusInput")
-
-        toggle.addEventListener("change", function () {
-
-            if (this.checked) {
-                statusInput.value = "ACTIVE"
-            } else {
-                statusInput.value = "INACTIVE"
-            }
-
-        })
-
-    </script>
-
-</body>
-
-</html>
+<style>
+    /* Global style for Django form fields to match Tailwind */
+    input[type="text"], 
+    input[type="number"], 
+    select, 
+    textarea {
+        width: 100%;
+        padding: 0.625rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    }
+    textarea {
+        min-height: 120px;
+    }
+</style>
+{% endblock %}

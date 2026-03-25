@@ -1,207 +1,171 @@
+{% extends 'seller_templates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopix | Seller Central</title>
+{% block title %}Dashboard | Shopix Seller{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{% block content %}
+<div class="max-w-6xl mx-auto w-full">
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
-
-        :root {
-            --color-dark: #0A0A0A;
-            --color-card: #141414;
-            --brand-red: #A04747;
-            --brand-gold: #D8A25E;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--color-dark);
-            color: #fff;
-            scroll-behavior: smooth;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
-
-</head>
-
-<body x-data="{ showProfile:false }">
-
-    <nav
-        class="h-20 glass-card sticky top-0 z-[100] px-6 md:px-16 flex items-center justify-between border-b border-white/5">
-        <div class="flex items-center gap-1">
-            <div class="w-24 h-16 flex items-center justify-center overflow-hidden rounded-xl"> <img
-                    src="{% static 'images/shopix_logo.jpeg' %}" class="w-full h-full object-cover"> </div> <span
-                class="text-xl font-bold tracking-tight pt-2"> <span class="text-white"><i>Seller</i></span> </span>
+    <!-- Page Title -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h3 class="text-2xl font-black text-gray-900">Overview</h3>
+            <p class="text-sm text-gray-400 mt-0.5">
+                Welcome back, <span class="text-amber-500 font-semibold">{{ seller_profile.store_name|default:"your store" }}</span>
+            </p>
         </div>
-        <div class="flex items-center gap-8">
-            <div
-                class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-white/50">
-                <a href="#" class="hover:text-white transition-colors">Analytics</a> <a href="#"
-                    class="hover:text-white transition-colors">Inventory</a> <a href="#"
-                    class="hover:text-white transition-colors text-[#D8A25E]">Support</a>
-            </div> <button @click="showProfile=true"
-                class="flex items-center gap-3 pl-6 border-l border-white/10 group">
-                <div class="text-right hidden sm:block w-40">
-                    <p class="text-xs font-bold">{{ seller_profile.store_name }}</p>
-                    <p class="text-[10px] text-white/40">Premium Account</p>
+        <div class="flex gap-3">
+            <button class="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-gray-300 transition-all shadow-sm">
+                Download Report
+            </button>
+            <a href="{% url 'addproduct' %}"
+                class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-amber-500 transition-all shadow-sm flex items-center gap-1.5">
+                <span class="material-icons-round text-[16px]">add</span> New Listing
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Revenue</p>
+                <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
+                    <span class="material-icons-round text-[18px]">payments</span>
                 </div>
-                <div x-show="showProfile" @click.outside="showProfile=false" x-transition
-                    class="absolute right-16 top-20 w-40 glass-card rounded-xl p-2 z-50">
+            </div>
+            <p class="text-3xl font-black text-gray-900">₹42,500</p>
+            <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
+                <span class="material-icons-round text-[14px]">trending_up</span> +14.2% this week
+            </div>
+        </div>
 
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-
-                        <button type="submit"
-                            class="w-full text-left px-4 py-2 text-sm hover:bg-white/10 rounded-lg text-amber-400 font-bold">
-                            Logout
-                        </button>
-
-                    </form>
-
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Orders</p>
+                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
+                    <span class="material-icons-round text-[18px]">shopping_cart</span>
                 </div>
+            </div>
+            <p class="text-3xl font-black text-gray-900">1,284</p>
+            <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
+                <span class="material-icons-round text-[14px]">trending_up</span> +8.4% this week
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Satisfaction</p>
+                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500">
+                    <span class="material-icons-round text-[18px]">verified</span>
+                </div>
+            </div>
+            <p class="text-3xl font-black text-gray-900">98.2%</p>
+            <div class="flex items-center gap-1 mt-3 text-gray-400 text-xs font-bold">
+                <span class="material-icons-round text-[14px]">star</span> Top Rated Seller
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts + Top Products -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <!-- Sales Chart -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h4 class="text-sm font-black text-gray-900">Sales Analytics</h4>
+                    <p class="text-xs text-gray-400 mt-0.5">Revenue per day</p>
+                </div>
+                <div class="flex bg-gray-50 p-1 rounded-xl gap-1">
+                    <button class="px-3 py-1.5 bg-white text-[10px] font-black rounded-lg shadow-sm text-gray-800">Weekly</button>
+                    <button class="px-3 py-1.5 text-[10px] font-black text-gray-400 hover:text-gray-600">Monthly</button>
+                </div>
+            </div>
+
+            <div class="h-52 flex items-end justify-between gap-3 px-1">
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-28 hover:bg-amber-400 transition-all duration-300 cursor-pointer relative group">
+                        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">₹2k</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-300">Mon</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-36 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Tue</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-amber-400 rounded-xl h-44 shadow-lg shadow-amber-100 relative">
+                        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded whitespace-nowrap">₹12k</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-300">Wed</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-32 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Thu</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-40 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Fri</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-20 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Sat</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-2">
+                    <div class="w-full bg-gray-100 rounded-xl h-44 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
+                    <span class="text-[10px] font-bold text-gray-300">Sun</span>
+                </div>
+            </div>
+        </div>0
+
+        <!-- Top Products -->
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 flex flex-col">
+            <h4 class="text-sm font-black text-gray-900 mb-5">Top Products</h4>
+
+            <div class="space-y-4 flex-1">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
+                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">Nike Air Max Gen-Z</p>
+                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">42 sales today</p>
+                    </div>
+                    <p class="text-xs font-black text-gray-900">₹8,499</p>
+                </div>
+
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
+                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">Matte Black Watch</p>
+                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">18 sales today</p>
+                    </div>
+                    <p class="text-xs font-black text-gray-900">₹2,200</p>
+                </div>
+
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
+                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">Wireless Earbuds Pro</p>
+                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">11 sales today</p>
+                    </div>
+                    <p class="text-xs font-black text-gray-900">₹3,999</p>
+                </div>
+            </div>
+
+            <button class="w-full mt-5 py-3 bg-gray-50 hover:bg-gray-900 hover:text-white text-gray-700 text-xs font-black rounded-xl transition-all uppercase tracking-widest">
+                View All
             </button>
         </div>
-    </nav>
-    <main x-show="!showProfile">
-        <section class="relative py-20 px-8 overflow-hidden">
-            <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
-                <div class="flex-1 text-center md:text-left"> <span
-                        class="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#D8A25E] text-xs font-bold mb-6 uppercase tracking-widest">
-                        Seller Dashboard 2.0 </span>
-                    <h1 class="text-5xl md:text-7xl font-black leading-[1.1] mb-8"> Scale your <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#D8A25E] to-[#A04747]">Empire.</span>
-                    </h1>
-                    <p class="text-lg text-white/50 mb-10 max-w-lg leading-relaxed"> Access high-intent buyers,
-                        professional logistical support, and deep analytics to grow from a local shop to a global brand.
-                    </p>
-                    <div class="flex flex-wrap gap-4 justify-center md:justify-start"> <a href="{% url 'addproduct' %}"
-                            class="px-10 py-5 bg-gradient-to-r from-[#A04747] to-[#D8A25E] text-white font-bold rounded-2xl shadow-lg flex items-center gap-3">
-                            <span class="material-icons-round">add_box</span> List New Product </a> </div>
-                </div>
-            </div>
-        </section>
-        <section class="py-12 px-8">
-            <div class="w-full flex items-end justify-between mb-10">
-                <div>
-                    <h3 class="text-3xl font-extrabold tracking-tight text-white mb-1">Your Inventory</h3>
-                    <p class="text-white/40 text-sm font-medium">
-                        Managing <span class="text-[#D8A25E]">{{ products|length }}</span> active listings
-                    </p>
-                </div>
-            </div>
-            <div class="flex gap-6 overflow-x-auto pb-12 no-scrollbar snap-x">
 
-                {% for product in products %}
-
-                <div class="flex-none snap-start w-72">
-
-                    <a href="{% url 'product_detail' product.id %}">
-                        <div
-                            class="glass-card rounded-[2rem] p-5 group hover:border-[#D8A25E]/50 transition-all duration-500">
-
-                            <div class="flex justify-between items-center mb-5">
-                                <p class="text-[10px] font-bold uppercase tracking-tighter text-white/30">
-                                    {{ product.brand|default:"Brand" }}
-                                </p>
-                            </div>
-
-                            <div class="aspect-square rounded-2xl overflow-hidden mb-6 bg-white/5 relative">
-
-                                {% if product.status == "INACTIVE" %}
-                                <div
-                                    class="absolute inset-0 bg-black/70 flex items-center justify-center z-10 rounded-2xl">
-                                    <span
-                                        class="px-4 py-2 text-xs font-bold uppercase tracking-widest bg-red-600 text-white rounded-lg shadow-lg">
-                                        Out of Stock
-                                    </span>
-                                </div>
-                                {% endif %}
-
-                                {% with product.images.first as img %}
-                                {% if img %}
-                                <img src="{{ img.image.url }}" alt="{{ product.name }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                {% else %}
-                                <div class="w-full h-full flex items-center justify-center text-white/10">
-                                    <span class="material-icons-round text-5xl">inventory_2</span>
-                                </div>
-                                {% endif %}
-                                {% endwith %}
-
-                            </div>
-
-                            <div class="mb-6">
-                                <h2 class="text-lg font-bold truncate group-hover:text-[#D8A25E] transition-colors">
-                                    {{ product.name }}
-                                </h2>
-
-                                <div class="flex items-baseline gap-1 mt-1">
-                                    <span class="text-xm text-white/40 font-bold">₹</span>
-                                    <span class="text-2xl font-black">{{ product.price }}/-</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </a>
-
-                    <a href="{% url 'edit_product' product.slug %}">
-                        <div
-                            class="pt-4 border-t border-white/5 flex items-center justify-between px-5 pb-5 cursor-pointer hover:text-[#D8A25E]">
-                            <span class="text-[10px] text-white/30 font-bold uppercase">
-                                Quick Edit
-                            </span>
-                            <span class="material-icons-round text-sm">
-                                edit
-                            </span>
-                        </div>
-                    </a>
-
-                </div>
-
-                {% empty %}
-
-                <div
-                    class="w-full py-20 glass-card rounded-[3rem] flex flex-col items-center justify-center border-dashed">
-                    <span class="material-icons-round text-6xl text-white/10 mb-4">analytics</span>
-
-                    <p class="text-white/30 font-medium">
-                        Your inventory is currently empty.
-                    </p>
-
-                    <a href="{% url 'addproduct' %}" class="mt-4 text-[#D8A25E] font-bold hover:underline">
-                        Start selling today →
-                    </a>
-                </div>
-
-                {% endfor %}
-
-            </div>
-        </section>
-    </main>
-
-</body>
-
-</html>
+    </div>
+</div>
+{% endblock %}

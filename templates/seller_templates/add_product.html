@@ -1,329 +1,210 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'seller_templates/base.html' %}
+{% load static %}
 
-<head>
+{% block title %}Add Product | Shopix Seller{% endblock %}
+{% block page_title %}Add New Product{% endblock %}
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block extra_head %}
+<style>
+    .file-input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
 
-    <title>E-SHOP | Add Product</title>
+{% block content %}
+<div class="max-w-6xl mx-auto w-full">
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- HEADER -->
+    <div class="mb-8 flex justify-between items-center">
+        <div>
+            <h3 class="text-2xl font-black text-gray-900">New Product Listing</h3>
+            <p class="text-sm text-gray-400 mt-0.5">
+                Fill in the details carefully before publishing.
+            </p>
+        </div>
+    </div>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#FFBF00",
-                    },
-                },
-            },
-        }
-    </script>
-
-    <style>
-        input[type=file] {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-    </style>
-
-</head>
-
-<body class="bg-gray-50 text-gray-800 font-sans p-6 md:p-10">
-
-    <form method="post" enctype="multipart/form-data" class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-8">
-
+    <!-- FORM -->
+    <form method="post" action="{% url 'addproduct' %}"
+          enctype="multipart/form-data" id="productForm">
         {% csrf_token %}
 
-        <div class="flex justify-between items-center mb-8 border-b pb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            <div>
-
-                <h1 class="text-3xl font-bold">
-                    Add <span class="text-primary">New Product</span>
-                </h1>
-
-                <p class="text-sm text-gray-500">
-                    Fill product details carefully before publishing.
+            <!-- ================= IMAGES ================= -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <p class="text-xs font-black text-gray-400 uppercase mb-4">
+                    Product Images
                 </p>
 
+                {{ image_formset.management_form }}
+
+                <div class="grid grid-cols-2 gap-3">
+                    {% for image_form in image_formset %}
+                    <div class="relative">
+                        {{ image_form.id }}
+
+                        <label class="relative w-full h-40 flex items-center justify-center 
+                                       border-2 border-dashed border-gray-200 rounded-xl 
+                                       cursor-pointer hover:border-amber-400 overflow-hidden">
+
+                            <!-- Preview -->
+                            <img id="preview{{ forloop.counter }}"
+                                 class="absolute inset-0 w-full h-full object-cover rounded-xl hidden"/>
+
+                            <!-- ✅ FIXED FILE INPUT -->
+                            <input type="file"
+                                   name="{{ image_form.image.name }}"
+                                   accept="image/*"
+                                   onchange="previewImage(event, 'preview{{ forloop.counter }}')"
+                                   class="file-input">
+
+                            <span class="text-xs text-gray-400 z-10">
+                                Upload
+                            </span>
+                        </label>
+
+                        {% if image_form.errors %}
+                        <p class="text-red-500 text-xs mt-1">
+                            {{ image_form.errors }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
 
-            <button type="submit"
-                class="px-6 py-2 border rounded-lg text-sm font-semibold hover:bg-gray-100 transition">
-                Save Draft
-            </button>
+            <!-- ================= PRODUCT DETAILS ================= -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
+
+                <p class="text-xs font-black text-gray-400 uppercase">
+                    Product Details
+                </p>
+
+                <div>
+                    <label class="text-xs font-bold">Name</label>
+                    {{ form.name }}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold">Brand</label>
+                        {{ form.brand }}
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold">Model</label>
+                        {{ form.model_number }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold">Base Price</label>
+                    {{ form.price }}
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold">Category</label>
+                    {{ form.subcategory }}
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold">Description</label>
+                    {{ form.description }}
+                </div>
+
+                <input type="hidden" name="status" value="ACTIVE">
+
+            </div>
 
         </div>
 
+        <!-- ================= VARIANTS ================= -->
+        <div class="mt-10 bg-white p-6 rounded-2xl border">
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <h3 class="text-lg font-bold mb-4">Variants</h3>
 
+            {{ variant_formset.management_form }}
 
-            <!-- LEFT SIDE IMAGE UPLOAD -->
+            {% for vform in variant_formset %}
+            <div class="border p-4 rounded-xl mb-4 bg-gray-50">
 
-            <div>
+                {{ vform.id }}
 
-                <h2 class="text-sm font-bold text-primary uppercase tracking-widest mb-4">
-                    Product Images
-                </h2>
-
-                {{ formset.management_form }}
-
-                <div class="grid grid-cols-2 gap-4">
-
-                    {% for image_form in formset %}
-
-                    <div class="relative">
-
-                        {{ image_form.id }}
-
-                        <label class="w-full h-48 flex items-center justify-center
-border-2 border-dashed border-gray-300
-rounded-xl cursor-pointer hover:border-primary
-hover:bg-gray-50 transition">
-
-                            <img id="preview{{ forloop.counter }}"
-                                class="absolute inset-0 w-full h-full object-cover rounded-xl hidden">
-
-                            <input type="file" name="{{ image_form.image.html_name }}"
-                                id="{{ image_form.image.id_for_label }}" accept="image/*"
-                                onchange="previewImage(event,'preview{{ forloop.counter }}')">
-
-                            <span class="text-gray-400 text-sm">
-                                Upload Image
-                            </span>
-
-                        </label>
-
-                    </div>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-
-
-            <!-- RIGHT SIDE PRODUCT FORM -->
-
-            <div class="space-y-6">
-
-                <div>
-
-                    <label class="block text-sm font-semibold mb-2">
-                        Product Name
-                    </label>
-
-                    {{ form.name }}
-
-                </div>
-
-
-                <div class="grid grid-cols-2 gap-4">
-
+                <div class="grid grid-cols-3 gap-4">
                     <div>
-
-                        <label class="block text-sm font-semibold mb-2">
-                            Brand
-                        </label>
-
-                        {{ form.brand }}
-
+                        <label class="text-xs">SKU</label>
+                        {{ vform.sku_code }}
                     </div>
 
                     <div>
-
-                        <label class="block text-sm font-semibold mb-2">
-                            Model Number
-                        </label>
-
-                        {{ form.model_number }}
-
+                        <label class="text-xs">Selling Price</label>
+                        {{ vform.selling_price }}
                     </div>
 
+                    <div>
+                        <label class="text-xs">Stock</label>
+                        {{ vform.stock_quantity }}
+                    </div>
                 </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-3">
+                    <div>
+                        <label class="text-xs">MRP</label>
+                        {{ vform.mrp }}
+                    </div>
+
+                    <div>
+                        <label class="text-xs">Cost Price</label>
+                        {{ vform.cost_price }}
+                    </div>
+
+                    <div>
+                        <label class="text-xs">Tax %</label>
+                        {{ vform.tax_percentage }}
+                    </div>
+                </div>
+
+                <div class="flex gap-6 mt-3">
+                    <label>{{ vform.is_cancellable }} Cancellable</label>
+                    <label>{{ vform.is_returnable }} Returnable</label>
+                </div>
+
+                <div class="mt-2">
+                    <label class="text-xs">Return Days</label>
+                    {{ vform.return_days }}
+                </div>
+
             </div>
+            {% endfor %}
 
-
-                <div>
-
-                    <label class="block text-sm font-semibold mb-2">
-                        Product Price
-                    </label>
-
-                    {{ form.price }}
-
-                </div>
-
-
-                <div>
-
-                    <label class="block text-sm font-semibold mb-2">
-                        Sub Category
-                    </label>
-
-                    {{ form.subcategory }}
-
-                </div>
-
-
-                <div>
-
-                    <label class="block text-sm font-semibold mb-2">
-                        Description
-                    </label>
-
-                    {{ form.description }}
-
-                </div>
-
-
-
-                <div class="grid grid-cols-2 gap-4">
-
-                    <div class="flex items-center gap-3">
-
-                        {{ form.is_cancellable }}
-
-                        <label class="text-sm font-medium">
-                            Cancellable
-                        </label>
-
-                    </div>
-
-                    <div class="flex items-center gap-3">
-
-                        {{ form.is_returnable }}
-
-                        <label class="text-sm font-medium">
-                            Returnable
-                        </label>
-
-                    </div>
-
-                </div>
-
-
-
-                <div>
-
-                    <label class="block text-sm font-semibold mb-2">
-                        Return Days
-                    </label>
-
-                    {{ form.return_days }}
-
-                </div>
-
-
-
-                <!-- STATUS TOGGLE -->
-
-                <div class="flex items-center justify-between pt-2">
-
-                    <label class="text-sm font-semibold">
-                        Product Status
-                    </label>
-
-                    <div class="flex items-center gap-3">
-
-                        <span class="text-sm text-gray-500">
-                            Inactive
-                        </span>
-
-                        <label class="relative inline-flex items-center cursor-pointer">
-
-                            <input type="checkbox" id="statusToggle" class="sr-only peer" checked>
-
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer
-peer-checked:bg-primary
-after:content-['']
-after:absolute
-after:top-[2px]
-after:left-[2px]
-after:bg-white
-after:border
-after:rounded-full
-after:h-5
-after:w-5
-after:transition-all
-peer-checked:after:translate-x-full">
-                            </div>
-
-                        </label>
-
-                        <span class="text-sm text-gray-500">
-                            Active
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <input type="hidden" name="status" id="statusInput" value="ACTIVE">
-
-
-
+            <!-- ✅ SINGLE SUBMIT BUTTON -->
+            <div class="flex justify-end mt-6">
                 <button type="submit"
-                    class="w-full bg-primary text-black font-bold py-4 rounded-xl hover:opacity-90 transition">
-
+                        class="px-8 py-3 bg-gray-900 text-white rounded-xl shadow hover:bg-black">
                     Publish Product
-
                 </button>
-
             </div>
 
         </div>
 
     </form>
+</div>
+{% endblock %}
 
+{% block extra_scripts %}
+<script>
+function previewImage(event, id) {
+    const file = event.target.files[0];
+    const img = document.getElementById(id);
 
-
-    <script>
-
-        function previewImage(event, previewId) {
-
-            const file = event.target.files[0]
-            const preview = document.getElementById(previewId)
-            const text = preview.parentElement.querySelector("span")
-
-            if (file) {
-
-                preview.src = URL.createObjectURL(file)
-                preview.classList.remove("hidden")
-                text.classList.add("hidden")
-
-            }
-
-        }
-
-
-        const toggle = document.getElementById("statusToggle")
-        const statusInput = document.getElementById("statusInput")
-
-        toggle.addEventListener("change", function () {
-
-            if (this.checked) {
-
-                statusInput.value = "ACTIVE"
-
-            } else {
-
-                statusInput.value = "INACTIVE"
-
-            }
-
-        })
-
-    </script>
-
-</body>
-
-</html>
+    if (file) {
+        img.src = URL.createObjectURL(file);
+        img.classList.remove("hidden");
+    }
+}
+</script>
+{% endblock %}

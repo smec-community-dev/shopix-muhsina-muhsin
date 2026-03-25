@@ -1,11 +1,67 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Edit Product</h1>
+
+<body class="bg-gray-100 min-h-screen flex justify-center items-center">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+
+        <h2 class="text-2xl font-bold mb-6 text-center">
+            Edit Store Profile
+        </h2>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-sm font-semibold">Store Name</label>
+                {{ form.store_name }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold">Store Slug</label>
+                {{ form.store_slug }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold">Profile Image</label>
+                {{ form.profile_image }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold">GST Number</label>
+                {{ form.gst_number }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold">PAN Number</label>
+                {{ form.pan_number }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold">Bank Account Number</label>
+                {{ form.bank_account_number }}
+            </div>
+
+            <button type="submit"
+                class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-xl mt-4">
+                Save Changes
+            </button>
+
+            <a href="{% url 'sellerprofile' %}" class="block text-center mt-4 text-gray-500 hover:text-black">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+
 </body>
+
 </html>

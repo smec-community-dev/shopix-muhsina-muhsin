@@ -13,7 +13,12 @@ class Cart(models.Model):
 class CartItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
-    variant = models.ForeignKey("seller.ProductVariant", on_delete=models.CASCADE)
+    variant = models.ForeignKey(
+    "seller.ProductVariant",
+    on_delete=models.CASCADE,
+    null=True,
+    blank=True
+)
     quantity = models.PositiveIntegerField(default=1)
     price_at_time = models.FloatField(null=True,default=0.0)
     
