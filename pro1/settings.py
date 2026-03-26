@@ -6,11 +6,14 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-your-key-here')
+# -----------------------------
+# Security
+# -----------------------------
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # -----------------------------
 # Application Definition
@@ -24,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # Your Apps
+    # Your apps
     'admin_app',
     'core',
     'customer',
@@ -34,8 +37,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
-    # Google Provider
     'allauth.socialaccount.providers.google',
 ]
 
@@ -53,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # Allauth Middleware
     'allauth.account.middleware.AccountMiddleware',
 ]
 
@@ -70,7 +70,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',  # Required by Allauth
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -104,13 +104,15 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # -----------------------------
-# Allauth Configuration
+# Allauth Settings
 # -----------------------------
-# Removed deprecated allauth settings
 ACCOUNT_LOGIN_METHODS = {"email": True}
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_SIGNUP_FIELDS = [
+    "email*",
+    "password1*",
+    "password2*",
+]
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
@@ -120,18 +122,16 @@ ACCOUNT_LOGOUT_ON_GET = True
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-# Custom Adapters
 ACCOUNT_ADAPTER = 'core.adapter.MyLoginAdapter'
 SOCIALACCOUNT_ADAPTER = 'core.adapter.MySocialAccountAdapter'
 
-# Auto connect existing users
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # -----------------------------
-# Google Provider Settings
+# Google OAuth
 # -----------------------------
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -149,7 +149,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # -----------------------------
 # Static Files
 # -----------------------------
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static"
@@ -158,18 +158,18 @@ STATICFILES_DIRS = [
 # -----------------------------
 # Media Files
 # -----------------------------
-MEDIA_URL = "/media/"
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
 # -----------------------------
-# Email Configuration (OTP / Verification)
+# Email Configuration
 # -----------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "musi974798@gmail.com"
-EMAIL_HOST_PASSWORD = "pewd dlqp cyow clak"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
