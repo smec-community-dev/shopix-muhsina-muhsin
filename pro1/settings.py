@@ -1,4 +1,5 @@
 import os
+
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -8,15 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Security ---
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-your-key-here')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
-
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-your-key-here')
-
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 # -----------------------------
@@ -44,6 +37,7 @@ INSTALLED_APPS = [
 
     # Google Provider
     'allauth.socialaccount.providers.google',
+
 ]
 
 SITE_ID = 1
@@ -59,14 +53,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # Allauth Middleware
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-
 ROOT_URLCONF = 'pro1.urls'
-
 
 # --- Templates ---
 TEMPLATES = [
@@ -85,9 +75,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'pro1.wsgi.application'
-
 
 # --- Database ---
 DATABASES = {
@@ -106,10 +94,8 @@ DATABASES = {
     # }
 }
 
-
 # --- Custom User ---
 AUTH_USER_MODEL = 'core.User'
-
 
 # --- Authentication Backends ---
 AUTHENTICATION_BACKENDS = [
@@ -117,41 +103,32 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-
-# --- Allauth Configuration (UPDATED) ---
+# --- Allauth Configuration ---
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
-
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
+# THIS LINE FIXES THE "ACCOUNT INACTIVE" PAGE REDIRECT
+ACCOUNT_ALLOW_INACTIVE_USER_LOGIN = True 
 
 # --- Custom Adapters ---
 ACCOUNT_ADAPTER = 'core.adapter.MyLoginAdapter'
 SOCIALACCOUNT_ADAPTER = 'core.adapter.MySocialAccountAdapter'
 
-
 # --- Social Account Settings ---
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
-
 SOCIALACCOUNT_LOGIN_ON_GET = True
-
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'SCOPE': [
-            'profile',
-            'email'
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online'
-        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
         'OAUTH_PKCE_ENABLED': True,
     }
 }
-
 
 # --- Redirects ---
 LOGIN_REDIRECT_URL = '/'
@@ -159,44 +136,19 @@ LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_SESSION_REMEMBER = True
 
-
 # --- Static & Media ---
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media"
 
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
-
-# -----------------------------
-# Media Files
-# -----------------------------
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
-# -----------------------------
-# Email Configuration (OTP / Verification)
-# -----------------------------
+# --- Email Configuration ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
-
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tkmuhsina658@gmail.com'
+EMAIL_HOST_PASSWORD = 'bknv dufb rybn wjbp'
 
 # --- Default Auto Field ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-
-# -----------------------------
-# Razorpay Configuration
-# -----------------------------
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_ScGDvA2v65vV7y")
-RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "JoAFet9IKTCDfUEJHoXyiEG7")

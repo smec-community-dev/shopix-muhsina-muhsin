@@ -1,201 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Your Identity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-amber: #FFBF00;
-            --dark-amber: #E6AC00;
-            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --text-main: #1a1a1a;
-            --text-muted: #6b7280;
-            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: var(--text-main);
-        }
-
-        .otp-card {
-            background: #ffffff;
-            padding: 3rem 2rem;
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            text-align: center;
-            max-width: 420px;
-            width: 100%;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* Icon Styling */
-        .icon-box {
-            width: 64px;
-            height: 64px;
-            background: #fffbeb;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 1.5rem;
-        }
-
-        .icon-box svg {
-            width: 32px;
-            height: 32px;
-            color: var(--primary-amber);
-        }
-
-        .otp-card h2 {
-            margin: 0 0 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-        }
-
-        .otp-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 2rem;
-        }
-
-        .error-message {
-            background: #fef2f2;
-            color: #991b1b;
-            padding: 0.875rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            border: 1px solid #fee2e2;
-            font-weight: 500;
-        }
-
-        /* Professional OTP Input Styling */
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 14px;
-            font-size: 1.5rem;
-            letter-spacing: 0.8rem;
-            /* Spacing out the digits */
-            text-align: center;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 10px;
-            box-sizing: border-box;
-            outline: none;
-            transition: all 0.2s ease;
-            background: #f9fafb;
-            font-weight: 600;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary-amber);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(255, 191, 0, 0.15);
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--primary-amber);
-            color: #000;
-            /* Dark text on amber is often more readable/professional */
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(255, 191, 0, 0.2);
-        }
-
-        button:hover {
-            background-color: var(--dark-amber);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(255, 191, 0, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .resend-container {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            border-top: 1px solid #f3f4f6;
-            padding-top: 1.5rem;
-        }
-
-        .resend-link {
-            color: var(--dark-amber);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-
-        .resend-link:hover {
-            color: #b38600;
-            text-decoration: underline;
-        }
-
-        .timer {
-            font-weight: 600;
-            color: var(--text-main);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Firefox */
+        input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
 
-<body>
+<body class="bg-white text-black min-h-screen flex items-center justify-center p-4">
 
-    <div class="otp-card">
-        <div class="icon-box">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                </path>
+    <div class="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-8 md:p-12 text-center">
+        
+        <div class="mx-auto w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
         </div>
 
-        <h2>Check your email</h2>
-        <p>We’ve sent a temporary verification code to your inbox. Enter the code below to secure your account.</p>
+        <h2 class="text-2xl font-bold tracking-tight mb-2">Check your email</h2>
+        <p class="text-gray-500 text-sm leading-relaxed mb-8">
+            We’ve sent a temporary verification code to your inbox. Enter the code below to secure your account.
+        </p>
 
         {% if messages %}
-        <div class="error-messages">
+        <div class="mb-6 space-y-2">
             {% for message in messages %}
-            <div class="error-message">{{ message }}</div>
+            <div class="bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
+                {{ message }}
+            </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <form method="POST">
+        <form method="POST" class="space-y-6">
             {% csrf_token %}
-            <div class="input-group">
-                <input type="text" name="otp" placeholder="000000" inputmode="numeric" pattern="\d{6}" maxlength="6"
-                    autocomplete="one-time-code" required>
+            <div class="relative">
+                <input 
+                    type="text" 
+                    name="otp" 
+                    placeholder="0 0 0 0 0 0" 
+                    inputmode="numeric" 
+                    pattern="\d{6}" 
+                    maxlength="6"
+                    autocomplete="one-time-code" 
+                    required
+                    class="w-full text-center text-3xl font-bold tracking-[0.75rem] py-4 bg-gray-50 border-2 border-gray-100 rounded-xl outline-none transition-all focus:border-amber-400 focus:bg-white focus:ring-4 focus:ring-amber-400/10"
+                >
             </div>
-            <button type="submit">Verify Identity</button>
+            
+            <button type="submit" class="w-full py-4 bg-amber-400 hover:bg-amber-500 text-black font-bold rounded-xl shadow-lg shadow-amber-200 transition-all active:scale-[0.98]">
+                Verify Identity
+            </button>
         </form>
 
-        <div class="resend-container">
-            Didn't receive the code?
-            <span id="timer-text">Wait <span class="timer" id="countdown">00:59</span></span>
-            <a href="#" id="resend-link" class="resend-link" style="display:none;">Resend Code</a>
+        <div class="mt-10 pt-8 border-t border-gray-50 text-sm text-gray-500">
+            Didn't receive the code? 
+            <div class="mt-2">
+                <span id="timer-text" class="font-medium text-black">
+                    Wait <span class="timer font-bold" id="countdown">00:59</span>
+                </span>
+                <a href="#" id="resend-link" class="hidden text-amber-600 font-bold hover:text-amber-700 hover:underline transition-colors">
+                    Resend Code
+                </a>
+            </div>
         </div>
     </div>
 
@@ -208,8 +84,8 @@
         const timer = setInterval(() => {
             if (timeLeft <= 0) {
                 clearInterval(timer);
-                timerText.style.display = 'none';
-                resendLink.style.display = 'inline';
+                timerText.classList.add('hidden');
+                resendLink.classList.remove('hidden');
             } else {
                 let seconds = timeLeft < 10 ? '0' + timeLeft : timeLeft;
                 countdownElem.innerHTML = `00:${seconds}`;
@@ -219,5 +95,4 @@
     </script>
 
 </body>
-
 </html>

@@ -1,22 +1,27 @@
-import os
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib import messages
-from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Q
-from core.adapter import get_redirect_by_role
-from customer.models import *
-from pro1 import settings
-from .models import *
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-
-from seller.models import *
+from django.utils import timezone
+import os
 import random
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.conf import settings
 from django.core.mail import send_mail
+from django.core.files.base import ContentFile
+from django.core.files import File
+from django.core.files.storage import default_storage
+
+from core.adapter import get_redirect_by_role
+from customer.models import WishlistItem
+from seller.models import ProductVariant
+from core.models import Category, User
+from seller.models import SellerProfile
+
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
 
 User = get_user_model()
 
@@ -24,21 +29,41 @@ def login_view(request):
     show_google_login = True 
 
     if request.method == "POST":
-        identifier = request.POST.get('login') 
+        email_input = request.POST.get('login') # This is the email field from your form
         password = request.POST.get('password')
 
-        user = authenticate(request, username=identifier, password=password)
+        # 1. Manually find the user by email
+        try:
+            user = User.objects.get(email=email_input)
+        except User.DoesNotExist:
+            messages.error(request, 'No account found with this email.')
+            return render(request, 'core_templates/loginpage.html', {'show_google_login': show_google_login})
 
-        if user is not None:
-            if user.is_superuser and "@" in identifier:
-                messages.error(request, "Admins must login using their username, not email.")
-                return redirect('login')
+        # 2. Check the password manually
+        if check_password(password, user.password):
+            
+            # 3. Check if the "is_active" flag is True (The Django Admin checkbox)
+            if not user.is_active:
+                messages.error(request, 'Your account is disabled. Please contact admin.')
+                return render(request, 'core_templates/loginpage.html', {'show_google_login': show_google_login})
 
-            login(request, user)
+            # 4. SELLER SPECIFIC: Check profile approval
+            if hasattr(user, 'role') and user.role == 'SELLER':
+                try:
+                    if user.seller_profile.status != 'APPROVED':
+                        messages.error(request, "Your seller profile is pending admin approval.")
+                        return render(request, 'core_templates/loginpage.html', {'show_google_login': show_google_login})
+                except AttributeError:
+                    messages.error(request, "Seller profile not found.")
+                    return render(request, 'core_templates/loginpage.html', {'show_google_login': show_google_login})
+
+            # 5. AUTHENTICATION SUCCESS
+            # We must specify the backend because we bypassed authenticate()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect(get_redirect_by_role(user))
         
         else:
-            messages.error(request, 'Invalid credentials. Please try again.')
+            messages.error(request, 'Incorrect password.')
 
     return render(request, 'core_templates/loginpage.html', {
         'show_google_login': show_google_login
@@ -59,10 +84,6 @@ def customer_register(request):
 
         if User.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists.')
-            return render(request, 'core_templates/customer_register.html')
-
-        if User.objects.filter(phone_number=phone).exists():
-            messages.error(request, 'Phone number already registered.')
             return render(request, 'core_templates/customer_register.html')
 
         otp = str(random.randint(100000, 999999))
@@ -94,6 +115,7 @@ def seller_register(request):
         data = request.POST
         files = request.FILES
         
+        # 1. Validation
         if data.get('password') != data.get('confirm_password'):
             messages.error(request, 'Passwords do not match.')
             return render(request, 'core_templates/seller_register.html')
@@ -102,12 +124,13 @@ def seller_register(request):
             messages.error(request, 'Email already exists.')
             return render(request, 'core_templates/seller_register.html')
 
+        # 2. Handle Temporary Documents
         doc1 = files.get('document_1')
         doc2 = files.get('document_2')
-        
-        path1 = default_storage.save(f'tmp/docs/{doc1.name}', ContentFile(doc1.read())) if doc1 else None
-        path2 = default_storage.save(f'tmp/docs/{doc2.name}', ContentFile(doc2.read())) if doc2 else None
+        path1 = default_storage.save(f'tmp/{doc1.name}', ContentFile(doc1.read())) if doc1 else None
+        path2 = default_storage.save(f'tmp/{doc2.name}', ContentFile(doc2.read())) if doc2 else None
 
+        # 3. Store in Session (Keys here must match verify_otp exactly)
         otp = str(random.randint(100000, 999999))
         request.session['register_data'] = {
             'first_name': data.get('first_name'),
@@ -116,8 +139,11 @@ def seller_register(request):
             'phone': data.get('phone'),
             'password': data.get('password'),
             'role': 'SELLER',
-            'shop_name': data.get('shop_name'),
-            'account_number': data.get('account_number'),
+            'store_name': data.get('shop_name'),
+            'business_address': data.get('business_address'),
+            'gst_number': data.get('gst_number'),
+            'pan_number': data.get('pan_number'),
+            'bank_account_number': data.get('account_number'),
             'ifsc_code': data.get('ifsc_code'),
             'branch_name': data.get('branch_name'),
             'doc1_path': path1,
@@ -125,13 +151,7 @@ def seller_register(request):
         }
         request.session['otp'] = otp
 
-        send_mail(
-            'Verify your Email',
-            f'Your OTP is {otp}',
-            settings.EMAIL_HOST_USER,
-            [data.get('email')],
-        )
-
+        send_mail('Verify Email', f'OTP: {otp}', settings.EMAIL_HOST_USER, [data.get('email')])
         return redirect('verify_otp')
 
     return render(request, 'core_templates/seller_register.html')
@@ -142,35 +162,78 @@ def verify_otp(request):
         session_otp = request.session.get('otp')
         data = request.session.get('register_data')
 
-        if user_otp == session_otp:
-            user = User.objects.create_user(
-                username=data['email'],
-                email=data['email'],
-                password=data['password'],
-                first_name=data['first_name'],
-                last_name=data['last_name'],
-                phone_number=data['phone'],
-                role='SELLER',
-                is_active=False
-            )
-
-            profile = SellerProfile.objects.create(
-                user=user,
-                shop_name=data['shop_name'],
-                account_number=data['account_number'],
-                ifsc_code=data['ifsc_code'],
-                branch_name=data['branch_name']
-            )
-
-            if data['doc1_path']:
-                profile.document_1.save(os.path.basename(data['doc1_path']), default_storage.open(data['doc1_path']))
-            if data['doc2_path']:
-                profile.document_2.save(os.path.basename(data['doc2_path']), default_storage.open(data['doc2_path']))
-
-            messages.success(request, "Registration successful! Please wait for Admin approval.")
+        # 1. Session Integrity Check
+        if not data or not session_otp:
+            messages.error(request, "Session expired or invalid registration attempt.")
             return redirect('login')
+
+        # 2. OTP Verification
+        if user_otp == session_otp:
+            try:
+                # 3. Create the User (Inactive by default)
+                user = User.objects.create_user(
+                    username=data['email'],
+                    email=data['email'],
+                    password=data['password'],
+                    first_name=data['first_name'],
+                    last_name=data['last_name'],
+                    phone_number=data.get('phone'),
+                    role=data.get('role', 'CUSTOMER'),
+                    is_active=False  # Blocks login until admin approval
+                )
+
+                # 4. Handle Seller Specific Logic
+                if data.get('role') == 'SELLER':
+                    # Create Profile with PENDING status
+                    profile = SellerProfile.objects.create(
+                        user=user,
+                        store_name=data['store_name'],
+                        business_address=data['business_address'],
+                        gst_number=data['gst_number'],
+                        pan_number=data['pan_number'],
+                        bank_account_number=data['bank_account_number'],
+                        ifsc_code=data['ifsc_code'],
+                        branch_name=data.get('branch_name'),
+                        status='PENDING' # Explicitly set status
+                    )
+
+                    # 5. Move Files from Temp to Permanent Storage
+                    # Map session keys to model fields
+                    document_map = [
+                        ('doc1_path', 'document_1'),
+                        ('doc2_path', 'document_2')
+                    ]
+
+                    for session_key, model_field_name in document_map:
+                        temp_path = data.get(session_key)
+                        if temp_path and default_storage.exists(temp_path):
+                            with default_storage.open(temp_path) as f:
+                                # Get the file field from the profile instance
+                                field = getattr(profile, model_field_name)
+                                # Save it (this moves it to MEDIA_ROOT/seller_docs/)
+                                field.save(os.path.basename(temp_path), File(f), save=True)
+                            
+                            # Clean up the temporary file
+                            default_storage.delete(temp_path)
+
+                else:
+                    # If it's a customer, you might want to auto-activate them
+                    user.is_active = True
+                    user.save()
+
+                # 6. Cleanup Session
+                del request.session['otp']
+                del request.session['register_data']
+
+                messages.success(request, "Registration successful! You can login only after admin approves you.")
+                return redirect('login')
+
+            except Exception as e:
+                # Handle unexpected database errors (like unique constraint failures)
+                messages.error(request, f"An error occurred: {str(e)}")
+                return redirect('login')
         else:
-            messages.error(request, "Invalid OTP.")
+            messages.error(request, "Invalid OTP. Please try again.")
             
     return render(request, 'core_templates/verify_otp.html')
 
@@ -241,7 +304,7 @@ def single_variant_view(request, id):
 
 def core_product(request):
     """View to display products page with New Arrivals section and All Products section"""
-    from django.db.models import Count
+    from django.db.models import Count, Q
     
     # Get filter/sort params
     category_id = request.GET.get('category_id')

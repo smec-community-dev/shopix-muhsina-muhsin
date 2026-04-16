@@ -34,7 +34,6 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        /* Ensure the body expands to fill height but allows scrolling on small screens */
         body {
             min-height: 100dvh;
         }
@@ -105,10 +104,10 @@
                 </div>
                 {% endif %}
 
-                <form class="space-y-5" method="POST" action="{% url 'account_login' %}">
+                <form class="space-y-5" method="POST" action="{% url 'login' %}">
                     {% csrf_token %} 
                     <div class="space-y-1">
-                        <label class="block text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">Email or Username</label>
+                        <label class="block text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">Email</label>
                         <input name="login" required
                             class="w-full bg-transparent border-0 border-b-2 border-gray-200 focus:border-amber-500 focus:ring-0 transition-colors py-3 px-2 text-black placeholder:text-gray-400 text-base"
                             placeholder="name@example.com" type="text" />

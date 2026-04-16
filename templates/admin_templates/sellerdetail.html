@@ -100,7 +100,7 @@
 
             {% if not seller.is_active %}
             <div class="space-y-3">
-                <form action="{% url 'approve_seller' seller.id %}" method="POST">
+                <form action="{% url 'approveseller' seller.id %}" method="POST">
                     {% csrf_token %}
                     <button type="submit"
                         class="w-full py-3 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-md shadow-green-100">
@@ -108,7 +108,7 @@
                     </button>
                 </form>
 
-                <form action="{% url 'reject_seller' seller.id %}" method="POST"
+                <form action="{% url 'rejectseller' seller.id %}" method="POST"
                     onsubmit="return confirm('Permanently delete this application?');">
                     {% csrf_token %}
                     <button type="submit"

@@ -8,35 +8,73 @@ from django.db import models
 from django.utils.text import slugify
 from core.models import User
 
+from django.db import models
+from django.utils.text import slugify
+
+from django.db import models
+from django.conf import settings
+from django.utils.text import slugify
+
 class SellerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="seller_profile")
+    # Status choices for admin approval workflow
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Approval'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
+
+    # Link to the custom User model
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='seller_profile'
+    )
     
+    # Store Information
     store_name = models.CharField(max_length=255)
     store_slug = models.SlugField(unique=True, blank=True)
     business_address = models.TextField()
     
-    gst_number = models.CharField(max_length=50)
-    pan_number = models.CharField(max_length=50)
-    bank_account_number = models.CharField(max_length=50)
-    ifsc_code = models.CharField(max_length=20)
-    branch_name = models.CharField(max_length=100, null=True, blank=True)
-    
-    
-    document_1 = models.FileField(upload_to='seller_docs/business/', null=True, blank=True)
-    document_2 = models.FileField(upload_to='seller_docs/tax/', null=True, blank=True)
-    
-    rating = models.FloatField(default=0)
+    # Verification & Status (The logic you requested)
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='PENDING'
+    )
     is_verified = models.BooleanField(default=False)
+    
+    # Tax & Identity Details
+    gst_number = models.CharField(max_length=15)
+    pan_number = models.CharField(max_length=10)
+    
+    # Banking Details
+    bank_account_number = models.CharField(max_length=20)
+    ifsc_code = models.CharField(max_length=11)
+    branch_name = models.CharField(max_length=100)
+    
+    # Document Uploads
+    document_1 = models.FileField(upload_to='seller_docs/', null=True, blank=True)
+    document_2 = models.FileField(upload_to='seller_docs/', null=True, blank=True)
+    
+    # Metrics (Fixed the IntegrityError by adding default=0.0)
+    rating = models.DecimalField(
+        max_digits=3, 
+        decimal_places=2, 
+        default=0.0, 
+        null=True, 
+        blank=True
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        # Automatically generate slug from store name if not provided
         if not self.store_slug:
             self.store_slug = slugify(self.store_name)
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.store_name
-
+        return f"{self.store_name} ({self.user.email})"
 
 # ================= PRODUCT =================
 class Product(models.Model):
