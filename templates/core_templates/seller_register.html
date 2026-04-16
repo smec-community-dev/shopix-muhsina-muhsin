@@ -17,9 +17,27 @@
             box-shadow: 0 0 0 1px #D97706;
         }
 
-        /* Smooth button transition */
         .btn-premium {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom styling for file inputs */
+        input[type="file"]::file-selector-button {
+            background-color: #000;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: background-color 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #D97706;
         }
     </style>
 </head>
@@ -34,8 +52,8 @@
                         src="{% static 'images/shopix_logo.jpeg' %}" />
                     <span class="text-xl md:text-2xl font-bold tracking-tighter text-zinc-900">Shopix</span>
                 </div>
-                <div class="hidden sm:block h-6 w-[1px] bg-surface-container-highest"></div>
-                <span class="hidden sm:block text-[10px] font-bold tracking-[0.2em] text-primary uppercase">
+                <div class="hidden sm:block h-6 w-[1px] bg-zinc-200"></div>
+                <span class="hidden sm:block text-[10px] font-bold tracking-[0.2em] text-amber-600 uppercase">
                     Premium Experience
                 </span>
             </div>
@@ -43,7 +61,7 @@
     </header>
 
     <div class="flex-grow flex items-center justify-center py-12 px-4">
-        <div class="max-w-xl w-full">
+        <div class="max-w-2xl w-full">
             
             <div class="text-center mb-10">
                 <h1 class="text-4xl font-extrabold text-black tracking-tighter sm:text-5xl">
@@ -65,53 +83,121 @@
                 </div>
                 {% endif %}
 
-                <form class="space-y-6" action="" method="POST">
+                <form class="space-y-8" action="" method="POST" enctype="multipart/form-data">
                     {% csrf_token %} 
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] border-b pb-2">Personal Information</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">First Name</label>
+                                <input name="first_name" type="text" required placeholder="John"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Last Name</label>
+                                <input name="last_name" type="text" required placeholder="Doe"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Business Email</label>
+                                <input name="email" type="email" required placeholder="john@business.com"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Mobile Number</label>
+                                <div class="flex rounded-xl overflow-hidden border border-gray-200 focus-within:border-amber-600 transition-all">
+                                    <span class="inline-flex items-center px-4 bg-gray-50 border-r border-gray-200 text-gray-900 font-bold text-sm">+91</span>
+                                    <input name="phone" type="tel" required maxlength="10" placeholder="00000 00000"
+                                        class="flex-1 px-4 py-3.5 outline-none text-sm bg-white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] border-b pb-2">Business Details</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Shop / Brand Name</label>
+                                <input name="shop_name" type="text" required placeholder="e.g. Shopix Luxury Goods"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">GST Number</label>
+                                <input name="gst_number" type="text" required placeholder="22AAAAA0000A1Z5"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">PAN Number</label>
+                                <input name="pan_number" type="text" required placeholder="ABCDE1234F"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                        </div>
                         <div>
-                            <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">First Name</label>
-                            <input name="first_name" type="text" required placeholder="Your First Name"
+                            <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Business Address</label>
+                            <textarea name="business_address" required placeholder="Full registered business address..." rows="3"
+                                class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] border-b pb-2">Banking Information</h3>
+                        <div>
+                            <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Account Number</label>
+                            <input name="account_number" type="text" required placeholder="0000111122223333"
                                 class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Last Name</label>
-                            <input name="last_name" type="text" required placeholder="Your Last Name"
-                                class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">IFSC Code</label>
+                                <input name="ifsc_code" type="text" required placeholder="SBIN000XXXX"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Branch Name</label>
+                                <input name="branch_name" type="text" placeholder="Main Street Branch"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Business Email</label>
-                        <input name="email" type="email" required placeholder="Your Business Email"
-                            class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm transition-all">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Mobile Number</label>
-                        <div class="flex rounded-xl overflow-hidden border border-gray-200 focus-within:border-amber-600 transition-all">
-                            <span class="inline-flex items-center px-4 bg-gray-50 border-r border-gray-200 text-gray-900 font-bold text-sm">
-                                +91
-                            </span>
-                            <input name="phone" type="tel" required maxlength="10" placeholder="00000 00000"
-                                class="flex-1 px-4 py-3.5 outline-none text-sm bg-white">
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] border-b pb-2">Verification Documents</h3>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">ID Proof (Document 1)</label>
+                                <input name="document_1" type="file" required class="w-full text-sm text-gray-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Business Proof (Document 2)</label>
+                                <input name="document_2" type="file" required class="w-full text-sm text-gray-500">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Password</label>
-                            <input name="password" type="password" required placeholder="••••••••"
-                                class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Confirm</label>
-                            <input name="confirm_password" type="password" required placeholder="••••••••"
-                                class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm">
+                    <div class="space-y-5">
+                        <h3 class="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em] border-b pb-2">Security</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Password</label>
+                                <input name="password" type="password" required placeholder="••••••••"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-black uppercase tracking-widest mb-2">Confirm Password</label>
+                                <input name="confirm_password" type="password" required placeholder="••••••••"
+                                    class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl input-focus text-sm">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex items-start space-x-3 pt-2">
+                    <div class="flex items-start space-x-3 pt-4">
                         <div class="flex items-center h-5">
                             <input type="checkbox" required class="h-4 w-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500">
                         </div>
@@ -123,7 +209,7 @@
 
                     <button type="submit" 
                         class="btn-premium w-full py-4 bg-black text-white text-xs font-black rounded-xl hover:bg-amber-600 tracking-[0.2em] uppercase mt-4 shadow-lg shadow-black/5">
-                        Create Seller Account
+                        Register & Verify Email
                     </button>
                 </form>
 

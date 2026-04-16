@@ -22,21 +22,30 @@ def sellerlisting(request):
 @staff_member_required
 def seller_detail(request, user_id):
     seller = get_object_or_404(User, id=user_id, role='SELLER')
-    return render(request, 'admin_templates/seller_detail.html', {
+    return render(request, 'admin_templates/sellerdetail.html', {
         'seller': seller
     })
 
 @staff_member_required
 def approve_seller(request, user_id):
+    # Fetch the seller
     seller = get_object_or_404(User, id=user_id, role='SELLER')
     
+    # 1. Update User model flags
     seller.is_active = True
     seller.is_verified = True
     seller.save()
 
+    # 2. Update the SellerProfile model status (CRITICAL FIX)
+    if hasattr(seller, 'seller_profile'):
+        profile = seller.seller_profile
+        profile.status = 'APPROVED'  # This matches your login check
+        profile.save()
+
+    # 3. Send Email
     send_mail(
         'Account Approved',
-        f'Hi {seller.first_name}, your shop "{seller.seller_profile.shop_name}" has been approved. You can now log in.',
+        f'Hi {seller.first_name}, your shop has been approved. You can now log in.',
         'admin@yourstore.com',
         [seller.email],
         fail_silently=True,

@@ -9,5 +9,6 @@ urlpatterns = [
     path('sellerdetails/<uuid:user_id>/', views.seller_detail, name='sellerdetails'),
     path('approveseller/<uuid:user_id>/approve/', views.approve_seller, name='approveseller'),
     path('rejectseller/<uuid:user_id>/reject/', views.reject_seller, name='rejectseller'),
+    path('seller/<uuid:user_id>/', views.seller_detail, name='seller_detail'),
     path('adminsettings/', views.adminsettings, name='adminsettings'),
 ]
