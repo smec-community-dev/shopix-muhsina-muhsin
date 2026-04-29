@@ -13,6 +13,9 @@ urlpatterns = [
     path('product/<int:id>/', views.single_variant_view, name='single_fetch'),
     path('core_product/', views.core_product, name='core_product'),
     path('products/', views.core_product, name='products'),
+    path('contactus/', views.contactus, name='contactus'),
+    path('privacy-policy/', views.privacypolicy, name='privacypolicy'),
+    path('terms-of-service/', views.termsofservice, name='termsofservice'),
     # path('search/', views.search_view, name='search'),
 
 ]

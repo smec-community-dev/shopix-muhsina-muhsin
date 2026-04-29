@@ -1,11 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Order View</h1>
-</body>
-</html>
+{% extends 'seller_templates/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-white text-black antialiased">
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <nav class="flex mb-4" aria-label="Breadcrumb">
+                    <ol class="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                        <li><a href="#" class="hover:text-amber-600 transition-colors">Dashboard</a></li>
+                        <li><span class="material-icons text-[12px]">chevron_right</span></li>
+                        <li class="text-black">Orders</li>
+                    </ol>
+                </nav>
+                <h1 class="text-4xl font-black tracking-tighter text-black">Order Management</h1>
+                <p class="text-gray-500 font-medium mt-2">Oversee your transactions and fulfillment status.</p>
+            </div>
+
+            <div class="flex gap-3">
+                <div class="bg-white border-2 border-gray-50 p-5 rounded-3xl flex items-center gap-4 shadow-sm min-w-[160px]">
+                    <!-- <div class="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center">
+                        <span class="material-icons text-amber-600">pending_actions</span>
+                    </div> -->
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pending</p>
+                        <p class="text-2xl font-black text-black">{{ pending_count }}</p>
+                    </div>
+                </div>
+                <div class="bg-black p-5 rounded-3xl flex items-center gap-4 shadow-xl min-w-[180px]">
+                    <div class="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center text-amber-400">
+                        <span class="material-icons">payments</span>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Revenue</p>
+                        <p class="text-2xl font-black text-white">${{ total_revenue }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div class="bg-white border border-gray-100 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-gray-200/50">
+            
+            <div class="px-8 py-6 border-b border-gray-50 flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="relative w-full lg:max-w-md">
+                    <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">search</span>
+                    <input type="text" 
+                           class="w-full pl-12 pr-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-amber-500/20 focus:bg-white transition-all text-sm font-medium outline-none placeholder:text-gray-400">
+                </div>
+                
+                <div class="flex items-center gap-3 w-full lg:w-auto">
+                    <button class="flex-1 lg:flex-none px-6 py-4 bg-white border border-gray-200 text-black text-xs font-black rounded-2xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-all uppercase tracking-widest">
+                        <span class="material-icons text-sm">filter_list</span> Filter
+                    </button>
+                    <button class="flex-1 lg:flex-none px-6 py-4 bg-amber-500 text-white text-xs font-black rounded-2xl flex items-center justify-center gap-2 hover:bg-amber-600 shadow-lg shadow-amber-500/20 transition-all uppercase tracking-widest">
+                        <span class="material-icons text-sm">file_download</span> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50/30">
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Order Details</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Customer</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Items</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Amount</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
+                            <!-- <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Action</th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for order in orders %}
+                        <tr class="hover:bg-gray-50/50 transition-all group">
+                            <td class="px-8 py-6">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-black text-black">#{{ order.id }}</span>
+                                    <span class="text-[11px] text-gray-400 font-bold uppercase mt-1">{{ order.created_at|date:"M d, Y" }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-3">
+                                    <!-- <div class="h-10 w-10 rounded-xl bg-black text-amber-400 flex items-center justify-center font-black text-xs shadow-inner">
+                                        {{ order.customer.name }}
+                                    </div> -->
+                                    <span class="text-sm font-bold text-gray-800 tracking-tight">{{ order.customer.name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="inline-flex items-center px-3 py-1 bg-gray-100 rounded-lg text-[11px] font-black text-gray-600 uppercase">
+                                    {{ order.total_items }} SKU
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-base font-black text-black">${{ order.total_amount }}</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                {% if order.status == 'Pending' %}
+                                <span class="px-4 py-1.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-black uppercase tracking-tighter border border-amber-100">
+                                    Processing
+                                </span>
+                                {% elif order.status == 'Shipped' %}
+                                <span class="px-4 py-1.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-tighter border border-blue-100">
+                                    In Transit
+                                </span>
+                                {% else %}
+                                <span class="px-4 py-1.5 rounded-full bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-tighter border border-green-100">
+                                    Delivered
+                                </span>
+                                {% endif %}
+                            </td>
+                            <!-- <td class="px-8 py-6 text-right">
+                                <a href="#" 
+                                   class="inline-flex items-center justify-center h-10 w-10 rounded-xl border border-gray-200 text-black hover:bg-black hover:text-white transition-all">
+                                    <span class="material-icons text-sm">visibility</span>
+                                </a>
+                            </td> -->
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="px-8 py-32 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="h-20 w-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                        <span class="material-icons text-4xl text-gray-200">auto_awesome_motion</span>
+                                    </div>
+                                    <p class="text-gray-400 font-black uppercase text-xs tracking-[0.2em]">Vault is currently empty</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="px-8 py-6 bg-gray-50/30 border-t border-gray-50 flex justify-between items-center">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Showing {{ orders|length }} latest orders</p>
+                <!-- <div class="flex gap-2">
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-black hover:border-black transition-all">
+                        <span class="material-icons text-sm"></span>
+                    </button>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-black bg-black text-white text-xs font-bold">1</button>
+                    <button class="h-8 w-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 hover:text-black hover:border-black transition-all">
+                        <span class="material-icons text-sm"></span>
+                    </button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

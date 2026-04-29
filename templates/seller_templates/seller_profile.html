@@ -5,7 +5,7 @@
 {% block page_title %}Store Profile{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto w-full">
+<div class="max-w-4xl mx-auto w-full">
 
     <!-- Profile Card -->
     <div class="bg-white rounded-2xl border border-gray-100 p-8 mb-5">
@@ -35,7 +35,7 @@
                 <p class="text-xs text-gray-400 mt-1">Seller since {{ seller.user.date_joined|date:"Y" }}</p>
             </div>
 
-            <a href="{% url 'edit_profile' %}"
+            <a href="{% url 'editprofile' %}"
                 class="flex-shrink-0 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-amber-500 transition-all">
                 Edit Profile
             </a>
@@ -58,11 +58,57 @@
         </div>
     </div>
 
-    <!-- Business Details -->
-    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Business Details</p>
+    <!-- Personal Info -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4 mb-5">
+        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Personal Information</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Full Name</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.user.first_name }} {{ seller.user.last_name }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Email</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.user.email }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Phone</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.user.phone_number|default:"Not Provided" }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Account Status</p>
+                <span class="inline-block text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest
+                    {% if seller.status == 'APPROVED' %}bg-green-50 text-green-600
+                    {% elif seller.status == 'REJECTED' %}bg-red-50 text-red-500
+                    {% else %}bg-amber-50 text-amber-600{% endif %}">
+                    {{ seller.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <!-- Store Info -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4 mb-5">
+        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Store Information</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Store Name</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.store_name }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Store Slug</p>
+                <p class="text-sm font-bold text-gray-900">@{{ seller.store_slug }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 sm:col-span-2">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Business Address</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.business_address|default:"Not Provided" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax & Identity -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4 mb-5">
+        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Tax & Identity</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="bg-gray-50 rounded-xl p-4">
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">GST Number</p>
                 <p class="text-sm font-bold text-gray-900">{{ seller.gst_number|default:"Not Provided" }}</p>
@@ -71,9 +117,96 @@
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">PAN Number</p>
                 <p class="text-sm font-bold text-gray-900">{{ seller.pan_number|default:"Not Provided" }}</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Banking Details -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4 mb-5">
+        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Banking Details</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="bg-gray-50 rounded-xl p-4">
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Bank Account</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Account Number</p>
                 <p class="text-sm font-bold text-gray-900">{{ seller.bank_account_number|default:"Not Provided" }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">IFSC Code</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.ifsc_code|default:"Not Provided" }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Branch Name</p>
+                <p class="text-sm font-bold text-gray-900">{{ seller.branch_name|default:"Not Provided" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4 mb-5">
+        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Recent Orders</p>
+        {% if orders %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Order #</th>
+                        <th class="px-4 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Product</th>
+                        <th class="px-4 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Qty</th>
+                        <th class="px-4 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Price</th>
+                        <th class="px-4 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                        <th class="px-4 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for item in orders %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 font-bold text-gray-900">#{{ item.order.order_number }}</td>
+                        <td class="px-4 py-3 text-gray-700">{{ item.variant.product.name }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ item.quantity }}</td>
+                        <td class="px-4 py-3 font-semibold text-gray-900">₹{{ item.price_at_purchase }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
+                                {% if item.order.order_status == 'PLACED' %}bg-amber-50 text-amber-600
+                                {% elif item.order.order_status == 'DELIVERED' %}bg-green-50 text-green-600
+                                {% elif item.order.order_status == 'CANCELLED' %}bg-red-50 text-red-500
+                                {% else %}bg-blue-50 text-blue-600{% endif %}">
+                                {{ item.order.order_status }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-gray-400">{{ item.order.ordered_at|date:"M d, Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-400 text-center py-6">No orders yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Documents -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+        <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Uploaded Documents</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Document 1</p>
+                    {% if seller.document_1 %}
+                    <a href="{{ seller.document_1.url }}" target="_blank" class="text-sm font-bold text-amber-500 hover:underline">View Document</a>
+                    {% else %}
+                    <p class="text-sm font-bold text-gray-400">Not Uploaded</p>
+                    {% endif %}
+                </div>
+                <span class="material-icons-round text-gray-300 text-[24px]">description</span>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Document 2</p>
+                    {% if seller.document_2 %}
+                    <a href="{{ seller.document_2.url }}" target="_blank" class="text-sm font-bold text-amber-500 hover:underline">View Document</a>
+                    {% else %}
+                    <p class="text-sm font-bold text-gray-400">Not Uploaded</p>
+                    {% endif %}
+                </div>
+                <span class="material-icons-round text-gray-300 text-[24px]">description</span>
             </div>
         </div>
     </div>

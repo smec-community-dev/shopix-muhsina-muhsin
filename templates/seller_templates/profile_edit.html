@@ -1,67 +1,128 @@
+{% extends 'seller_templates/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+{% block title %}Edit Profile | Shopix Seller{% endblock %}
+{% block page_title %}Edit Profile{% endblock %}
 
-<body class="bg-gray-100 min-h-screen flex justify-center items-center">
+{% block content %}
+<div class="max-w-4xl mx-auto w-full">
 
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <form method="POST" enctype="multipart/form-data" class="space-y-5">
+        {% csrf_token %}
 
-        <h2 class="text-2xl font-bold mb-6 text-center">
-            Edit Store Profile
-        </h2>
-
-        <form method="POST" enctype="multipart/form-data" class="space-y-4">
-            {% csrf_token %}
-
-            <div>
-                <label class="block text-sm font-semibold">Store Name</label>
-                {{ form.store_name }}
+        <!-- Personal Information -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Personal Information</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">First Name</label>
+                    {{ user_form.first_name }}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Last Name</label>
+                    {{ user_form.last_name }}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Phone Number</label>
+                    {{ user_form.phone_number }}
+                </div>
             </div>
+            {% for field in user_form %}
+                {% if field.errors %}
+                <p class="text-xs text-red-500 mt-1">{{ field.label }}: {{ field.errors|join:", " }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold">Store Slug</label>
-                {{ form.store_slug }}
+        <!-- Store Information -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Store Information</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Store Name</label>
+                    {{ profile_form.store_name }}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Store Slug</label>
+                    {{ profile_form.store_slug }}
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Business Address</label>
+                    {{ profile_form.business_address }}
+                </div>
             </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold">Profile Image</label>
-                {{ form.profile_image }}
+        <!-- Tax & Identity -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Tax & Identity</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">GST Number</label>
+                    {{ profile_form.gst_number }}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">PAN Number</label>
+                    {{ profile_form.pan_number }}
+                </div>
             </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold">GST Number</label>
-                {{ form.gst_number }}
+        <!-- Banking Details -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Banking Details</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Account Number</label>
+                    {{ profile_form.bank_account_number }}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">IFSC Code</label>
+                    {{ profile_form.ifsc_code }}
+                    {% if profile_form.ifsc_code.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ profile_form.ifsc_code.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Branch Name</label>
+                    {{ profile_form.branch_name }}
+                </div>
             </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold">PAN Number</label>
-                {{ form.pan_number }}
+        <!-- Documents -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Documents</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Document 1</label>
+                    {% if seller.document_1 %}
+                    <p class="text-[10px] text-amber-500 font-semibold mb-1.5">Current: <a href="{{ seller.document_1.url }}" target="_blank" class="underline">View</a></p>
+                    {% endif %}
+                    {{ profile_form.document_1 }}
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Document 2</label>
+                    {% if seller.document_2 %}
+                    <p class="text-[10px] text-amber-500 font-semibold mb-1.5">Current: <a href="{{ seller.document_2.url }}" target="_blank" class="underline">View</a></p>
+                    {% endif %}
+                    {{ profile_form.document_2 }}
+                </div>
             </div>
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold">Bank Account Number</label>
-                {{ form.bank_account_number }}
-            </div>
-
+        <!-- Actions -->
+        <div class="flex items-center gap-3">
             <button type="submit"
-                class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-xl mt-4">
+                class="px-6 py-2.5 bg-gray-900 text-white text-xs font-black rounded-xl hover:bg-amber-500 transition-all">
                 Save Changes
             </button>
-
-            <a href="{% url 'sellerprofile' %}" class="block text-center mt-4 text-gray-500 hover:text-black">
+            <a href="{% url 'sellerprofile' %}"
+                class="px-6 py-2.5 bg-white border border-gray-200 text-xs font-bold text-gray-600 rounded-xl hover:border-gray-300 transition-all">
                 Cancel
             </a>
+        </div>
 
-        </form>
-
-    </div>
-
-</body>
-
-</html>
+    </form>
+</div>
+{% endblock %}

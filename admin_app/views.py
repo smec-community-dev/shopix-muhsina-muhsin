@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from core.models import User
+from admin_app.forms import CategoryForm, SubCategoryForm
+from core.models import Category, SubCategory, User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
@@ -10,13 +11,21 @@ from core.models import User
 
 
 def admindashboard(request):
-    return render(request, 'admin_templates/admindashboard.html')
+    sellers = User.objects.filter(role='SELLER').select_related('seller_profile').order_by('-created_at')
+    customers = User.objects.filter(role='CUSTOMER')
+    sellercount = sellers.count()
+    customercount = customers.count()
+    return render(request, 'admin_templates/admindashboard.html', {
+        'sellercount': sellercount,
+        'customercount': customercount,
+    })
 
 @staff_member_required
 def sellerlisting(request):
     sellers = User.objects.filter(role='SELLER').select_related('seller_profile').order_by('-created_at')
     return render(request, 'admin_templates/sellerlisting.html', {
-        'sellers': sellers
+        'sellers': sellers,
+      
     })
 
 @staff_member_required
@@ -69,7 +78,8 @@ def reject_seller(request, user_id):
 def customerlisting(request):
     customers = User.objects.filter(role='CUSTOMER')
     return render(request, 'admin_templates/customerlisting.html', {
-        'customers': customers
+        'customers': customers,
+        
     })
 
 
@@ -79,3 +89,78 @@ def productlisting(request):
 def adminsettings(request):
     return render(request, 'admin_templates/adminsettings.html')
 
+def categorymanagement(request):
+    categories = Category.objects.all()
+    return render(request, 'admin_templates/categorymanagement.html', {
+        'categories': categories
+    })
+
+
+
+def add_category(request):
+    if request.method == 'POST':
+        # request.FILES is required for the image upload
+        form = CategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('categorymanagement')
+    else:
+        form = CategoryForm()
+    return render(request, 'admin_templates/category_form.html', {'form': form, 'title': 'Add New'})
+
+def edit_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, request.FILES, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('categorymanagement')
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'admin_templates/category_form.html', {'form': form, 'title': 'Edit'})
+
+def delete_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == 'POST':
+        category.delete()
+    return redirect('categorymanagement')
+
+def subcategory_list(request):
+    subs = SubCategory.objects.all().select_related('category').order_by('category__name', 'name')
+    return render(request, 'admin_templates/subcategorymanagement.html', {'subcategories': subs})
+
+def add_subcategory(request):
+    if request.method == 'POST':
+        form = SubCategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('subcategorymanagement')
+    else:
+        form = SubCategoryForm()
+    return render(request, 'admin_templates/category_form.html', {'form': form, 'title': 'Add Sub-'})
+
+def edit_subcategory(request, pk):
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+    
+    if request.method == 'POST':
+        form = SubCategoryForm(request.POST, request.FILES, instance=subcategory)
+        if form.is_valid():
+            form.save()
+            return redirect('subcategorymanagement')
+    else:
+        form = SubCategoryForm(instance=subcategory)
+    
+    context = {
+        'form': form,
+        'title': 'Edit Sub-Category',
+        'subcategory': subcategory
+    }
+    return render(request, 'admin_templates/category_form.html', context)
+
+def delete_subcategory(request, pk):
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+    
+    if request.method == 'POST':
+        subcategory.delete()
+        
+    return redirect('subcategorymanagement')

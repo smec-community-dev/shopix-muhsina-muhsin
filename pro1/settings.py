@@ -79,19 +79,22 @@ WSGI_APPLICATION = 'pro1.wsgi.application'
 
 # --- Database ---
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shopixdb',    
-        'USER': 'admin',      
-        'PASSWORD': 'muhsin75',  
-        'HOST': 'database-2.c5a0kwoqi37h.ap-southeast-2.rds.amazonaws.com',               
-        'PORT': '3306',                   
-    }
-
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': os.getenv('DATABASE_NAME', 'shopixdb'),
+    #     'USER': os.getenv('DATABASE_USER', 'admin'),
+    #     'PASSWORD': os.getenv('DATABASE_PASSWORD', 'AwsMysql'),
+    #     'HOST': os.getenv('DATABASE_HOST', 'database-1.cn0iq08we8ut.ap-southeast-2.rds.amazonaws.com'),
+    #     'PORT': os.getenv('DATABASE_PORT', '3306'),
+    #     'OPTIONS': {
+    #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+    #     },
     # }
+
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # --- Custom User ---
@@ -141,6 +144,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # --- Email Configuration ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

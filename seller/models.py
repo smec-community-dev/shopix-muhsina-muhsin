@@ -204,3 +204,10 @@ class InventoryLog(models.Model):
 
     def __str__(self):
         return f"{self.variant.sku_code} ({self.change_amount})"
+    
+# class OrderItem(models.Model):
+#     order = models.ForeignKey("customer.Order", on_delete=models.CASCADE, related_name="items")
+#     product = models.ForeignKey("seller.Product", on_delete=models.CASCADE)
+#     seller = models.ForeignKey("seller.SellerProfile", on_delete=models.CASCADE)
+#     quantity = models.PositiveIntegerField(default=1)
+#     price = models.DecimalField(max_digits=10, decimal_places=2)

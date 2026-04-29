@@ -31,7 +31,7 @@
             <div class="h-16 flex items-center">
                 <img src="{% static 'images/shopix_admin.png' %}" class="h-12">
             </div>
-            <p class="text-xs uppercase text-gray-400 mt-2 pl-4"><b>Admin Overview</b></p>
+            <p class="text-xs uppercase text-amber-400 mt-2 pl-4"><b>Admin Overview</b></p>
         </div>
 
         <nav class="flex-1 space-y-1">
@@ -39,7 +39,7 @@
    {% if request.resolver_match.url_name == 'admindashboard' %}
        text-amber-700 bg-amber-100
    {% else %}
-       text-gray-500 hover:bg-gray-100
+       text-black-500 hover:bg-black-100
    {% endif %}">
 
                 <span class="material-symbols-outlined text-[18px]">dashboard</span>
@@ -51,7 +51,7 @@
    {% if request.resolver_match.url_name == 'customerlisting' %}
        text-amber-700 bg-amber-100
    {% else %}
-       text-gray-500 hover:bg-gray-100
+       text-black-500 hover:bg-black-100
    {% endif %}">
 
                 <span class="material-symbols-outlined text-[18px]">group</span>
@@ -63,7 +63,7 @@
    {% if request.resolver_match.url_name == 'sellerlisting' %}
        text-amber-700 bg-amber-100
    {% else %}
-       text-gray-500 hover:bg-gray-100
+       text-black-500 hover:bg-black-100
    {% endif %}">
 
                 <span class="material-symbols-outlined text-[18px]">store</span>
@@ -75,19 +75,38 @@
    {% if request.resolver_match.url_name == 'productlisting' %}
        text-amber-700 bg-amber-100
    {% else %}
-       text-gray-500 hover:bg-gray-100
+       text-black-500 hover:bg-black-100
    {% endif %}">
 
                 <span class="material-symbols-outlined text-[18px]">inventory_2</span>
                 <span>Registered Products</span>
             </a>
+            <a href="{% url 'categorymanagement' %}" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition
+   {% if request.resolver_match.url_name == 'productlisting' %}
+       text-amber-700 bg-amber-100
+   {% else %}
+       text-black-500 hover:bg-black-100
+   {% endif %}">
 
+                <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                <span>Category Management</span>
+            </a>
+            <a href="{% url 'subcategorymanagement' %}" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition
+   {% if request.resolver_match.url_name == 'subcategorymanagement' %}
+       text-amber-700 bg-amber-100
+   {% else %}
+       text-black-500 hover:bg-black-100
+   {% endif %}">
+
+                <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                <span>Sub-Category Management</span>
+            </a>
 
             <a href="{% url 'adminsettings' %}" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition
    {% if request.resolver_match.url_name == 'adminsettings' %}
        text-amber-700 bg-amber-100
    {% else %}
-       text-gray-500 hover:bg-gray-100
+       text-black-500 hover:bg-black-100
    {% endif %}">
 
                 <span class="material-symbols-outlined text-[18px]">settings</span>

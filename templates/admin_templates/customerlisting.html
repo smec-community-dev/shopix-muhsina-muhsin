@@ -21,8 +21,8 @@
                 <th class="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-black-400">Email</th>
                 <th class="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-black-400 text-center">Status
                 </th>
-                <th class="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-black-400 text-center">
-                    Moderation</th>
+                <!-- <th class="px-6 py-4 text-[10px] uppercase tracking-[0.2em] font-bold text-black-400 text-center">
+                    Moderation</th> -->
             </tr>
         </thead>
 
@@ -52,23 +52,14 @@
                     </span>
                     {% else %}
                     <span
-                        class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-400 border border-gray-200">
-                        Pending
+                        class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-400 border border-green-200">
+                        Active
                     </span>
                     {% endif %}
                 </td>
 
-                <td class="px-6 py-4">
+                <!-- <td class="px-6 py-4">
                     <div class="flex justify-center gap-2">
-
-                        <form method="POST">
-                            {% csrf_token %}
-                            <button
-                                class="px-3 py-1.5 text-[10px] font-bold bg-white border border-green-500 text-green-600 rounded-lg hover:bg-green-500 hover:text-white">
-                                Approve
-                            </button>
-                        </form>
-
                         <form method="POST">
                             {% csrf_token %}
                             <button
@@ -80,13 +71,23 @@
                         <form method="POST">
                             {% csrf_token %}
                             <button
+                                class="px-3 py-1.5 text-[10px] font-bold bg-white border border-green-500 text-green-600 rounded-lg hover:bg-green-500 hover:text-white">
+                                Approve
+                            </button>
+                        </form>
+
+                        
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button
                                 class="px-3 py-1.5 text-[10px] font-bold bg-white border border-gray-200 text-gray-400 rounded-lg hover:bg-gray-600 hover:text-white">
                                 Keep Pending
                             </button>
                         </form>
 
                     </div>
-                </td>
+                </td> -->
 
             </tr>
             {% empty %}

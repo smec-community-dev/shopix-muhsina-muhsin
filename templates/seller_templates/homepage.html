@@ -5,167 +5,189 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto w-full">
+<div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
 
-    <!-- Page Title -->
-    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-100 pb-8">
         <div>
-            <h3 class="text-2xl font-black text-gray-900">Overview</h3>
-            <p class="text-sm text-gray-400 mt-0.5">
-                Welcome back, <span class="text-amber-500 font-semibold">{{ seller_profile.store_name|default:"your store" }}</span>
-            </p>
+            <div class="flex items-center gap-2 text-[11px] font-bold text-amber-600 uppercase tracking-[0.2em] mb-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                {{ seller_profile.store_name|default:"Partner Store" }}
+            </div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-gray-950">Marketplace <span class="text-gray-400 font-light">Overview</span></h1>
         </div>
-        <div class="flex gap-3">
-            <button class="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:border-gray-300 transition-all shadow-sm">
-                Download Report
+        
+        <div class="flex items-center gap-4">
+            <button class="flex items-center justify-center w-11 h-11 bg-white border border-gray-200 rounded-full text-gray-600 hover:border-black hover:text-black transition-all shadow-sm">
+                <span class="material-icons-round text-xl">notifications_none</span>
             </button>
             <a href="{% url 'addproduct' %}"
-                class="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-amber-500 transition-all shadow-sm flex items-center gap-1.5">
-                <span class="material-icons-round text-[16px]">add</span> New Listing
+                class="inline-flex items-center px-6 py-3 bg-gray-950 text-white rounded-full text-sm font-bold hover:bg-amber-600 transition-all shadow-lg active:scale-95 group">
+                <span class="material-icons-round text-lg mr-2 group-hover:rotate-90 transition-transform">add</span> 
+                List New Product
             </a>
         </div>
     </div>
 
-    <!-- Stat Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Revenue</p>
-                <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
-                    <span class="material-icons-round text-[18px]">payments</span>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                    <span class="material-icons-round">account_balance_wallet</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">+14.2%</span>
                 </div>
             </div>
-            <p class="text-3xl font-black text-gray-900">₹42,500</p>
-            <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
-                <span class="material-icons-round text-[14px]">trending_up</span> +14.2% this week
-            </div>
+            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Gross Revenue</h3>
+            <p class="text-4xl font-black text-gray-950">₹42,500<span class="text-lg text-gray-300 ml-1">.00</span></p>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Orders</p>
-                <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
-                    <span class="material-icons-round text-[18px]">shopping_cart</span>
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-gray-950 flex items-center justify-center text-white">
+                    <span class="material-icons-round text-xl">local_mall</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">+8.1%</span>
                 </div>
             </div>
-            <p class="text-3xl font-black text-gray-900">1,284</p>
-            <div class="flex items-center gap-1 mt-3 text-green-500 text-xs font-bold">
-                <span class="material-icons-round text-[14px]">trending_up</span> +8.4% this week
-            </div>
+            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Total Shipments</h3>
+            <p class="text-4xl font-black text-gray-950">1,284</p>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Satisfaction</p>
-                <div class="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500">
-                    <span class="material-icons-round text-[18px]">verified</span>
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                    <span class="material-icons-round">verified_user</span>
+                </div>
+                <div class="flex -space-x-2">
+                    <div class="w-7 h-7 rounded-full border-2 border-white bg-gray-200"></div>
+                    <div class="w-7 h-7 rounded-full border-2 border-white bg-gray-300"></div>
                 </div>
             </div>
-            <p class="text-3xl font-black text-gray-900">98.2%</p>
-            <div class="flex items-center gap-1 mt-3 text-gray-400 text-xs font-bold">
-                <span class="material-icons-round text-[14px]">star</span> Top Rated Seller
-            </div>
+            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Seller Rating</h3>
+            <p class="text-4xl font-black text-gray-950">98.2%</p>
         </div>
-
     </div>
 
-    <!-- Charts + Top Products -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-        <!-- Sales Chart -->
-        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-gray-100">
-            <div class="flex items-center justify-between mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+            <div class="flex items-center justify-between mb-10">
                 <div>
-                    <h4 class="text-sm font-black text-gray-900">Sales Analytics</h4>
-                    <p class="text-xs text-gray-400 mt-0.5">Revenue per day</p>
+                    <h3 class="text-xl font-bold text-gray-900">Performance Index</h3>
+                    <p class="text-sm text-gray-400">Net revenue vs previous period</p>
                 </div>
-                <div class="flex bg-gray-50 p-1 rounded-xl gap-1">
-                    <button class="px-3 py-1.5 bg-white text-[10px] font-black rounded-lg shadow-sm text-gray-800">Weekly</button>
-                    <button class="px-3 py-1.5 text-[10px] font-black text-gray-400 hover:text-gray-600">Monthly</button>
-                </div>
-            </div>
-
-            <div class="h-52 flex items-end justify-between gap-3 px-1">
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-gray-100 rounded-xl h-28 hover:bg-amber-400 transition-all duration-300 cursor-pointer relative group">
-                        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">₹2k</span>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-300">Mon</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-gray-100 rounded-xl h-36 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                    <span class="text-[10px] font-bold text-gray-300">Tue</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-amber-400 rounded-xl h-44 shadow-lg shadow-amber-100 relative">
-                        <span class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-0.5 px-2 rounded whitespace-nowrap">₹12k</span>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-300">Wed</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-gray-100 rounded-xl h-32 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                    <span class="text-[10px] font-bold text-gray-300">Thu</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-gray-100 rounded-xl h-40 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                    <span class="text-[10px] font-bold text-gray-300">Fri</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-gray-100 rounded-xl h-20 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                    <span class="text-[10px] font-bold text-gray-300">Sat</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-gray-100 rounded-xl h-44 hover:bg-amber-400 transition-all duration-300 cursor-pointer"></div>
-                    <span class="text-[10px] font-bold text-gray-300">Sun</span>
+                <div class="flex bg-gray-50 p-1 rounded-xl">
+                    <button class="px-4 py-2 bg-white text-xs font-bold rounded-lg shadow-sm">Sales</button>
+                    <button class="px-4 py-2 text-xs font-bold text-gray-400 hover:text-gray-900">Volume</button>
                 </div>
             </div>
-        </div>0
+            
+           <div class="h-64 flex items-end justify-between gap-3 sm:gap-6">
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-gray-100 rounded-2xl transition-all duration-500 group-hover:bg-amber-400 relative" style="height: 80px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl scale-75 group-hover:scale-100">₹2k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-300 tracking-widest">M</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-gray-100 rounded-2xl transition-all duration-500 group-hover:bg-amber-400 relative" style="height: 110px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl scale-75 group-hover:scale-100">₹5k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-300 tracking-widest">T</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-amber-500 rounded-2xl transition-all duration-500 relative" style="height: 180px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-100 transition-all whitespace-nowrap shadow-xl">₹12k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-950 tracking-widest">W</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-gray-100 rounded-2xl transition-all duration-500 group-hover:bg-amber-400 relative" style="height: 95px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl scale-75 group-hover:scale-100">₹4k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-300 tracking-widest">T</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-gray-100 rounded-2xl transition-all duration-500 group-hover:bg-amber-400 relative" style="height: 140px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl scale-75 group-hover:scale-100">₹9k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-300 tracking-widest">F</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-gray-100 rounded-2xl transition-all duration-500 group-hover:bg-amber-400 relative" style="height: 60px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl scale-75 group-hover:scale-100">₹3k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-300 tracking-widest">S</span>
+    </div>
+    <div class="flex-1 flex flex-col items-center gap-4 group">
+        <div class="w-full bg-gray-100 rounded-2xl transition-all duration-500 group-hover:bg-amber-400 relative" style="height: 130px">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-950 text-white text-[10px] py-2 px-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all whitespace-nowrap shadow-xl scale-75 group-hover:scale-100">₹7k</div>
+        </div>
+        <span class="text-[10px] font-black text-gray-300 tracking-widest">S</span>
+    </div>
+</div>
+        </div>
 
-        <!-- Top Products -->
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 flex flex-col">
-            <h4 class="text-sm font-black text-gray-900 mb-5">Top Products</h4>
-
-            <div class="space-y-4 flex-1">
-                <div class="flex items-center gap-3 group cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
-                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold text-gray-900 truncate">Nike Air Max Gen-Z</p>
-                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">42 sales today</p>
-                    </div>
-                    <p class="text-xs font-black text-gray-900">₹8,499</p>
+        <div class="lg:col-span-5 flex flex-col">
+            <div class="bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col h-full overflow-hidden">
+                <div class="p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+                    <h3 class="text-xl font-bold text-gray-950">Inventory</h3>
+                    <a href="{% url 'productlist' %}" class="text-xs font-black text-amber-600 hover:text-amber-700 uppercase tracking-widest">Full List</a>
                 </div>
 
-                <div class="flex items-center gap-3 group cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
-                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold text-gray-900 truncate">Matte Black Watch</p>
-                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">18 sales today</p>
-                    </div>
-                    <p class="text-xs font-black text-gray-900">₹2,200</p>
-                </div>
+                <div class="divide-y divide-gray-50 overflow-y-auto max-h-[420px] px-2">
+                    {% for product in products %}
+                    <a href="{% url 'product_detail' product.pk %}" class="flex items-center gap-5 p-6 hover:bg-gray-50/80 transition-all rounded-2xl group my-1">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-100 border border-gray-200 flex-shrink-0 overflow-hidden shadow-sm group-hover:border-amber-200 transition-all">
+                            {% if product.images.all %}
+                            <img src="{{ product.images.first.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ product.name }}">
+                            {% else %}
+                            <div class="w-full h-full flex items-center justify-center bg-white">
+                                <span class="material-icons-round text-gray-200">image_not_supported</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-bold text-gray-950 group-hover:text-amber-600 transition-colors truncate">{{ product.name }}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-tighter
+                                    {% if product.approval_status == 'APPROVED' %}bg-green-100 text-green-700
+                                    {% elif product.approval_status == 'REJECTED' %}bg-red-100 text-red-700
+                                    {% else %}bg-amber-100 text-amber-700{% endif %}">
+                                    {{ product.approval_status }}
+                                </span>
+                                <span class="text-[11px] text-gray-400 font-medium">· ID: #{{ product.id|slice:":4" }}</span>
+                            </div>
+                        </div>
 
-                <div class="flex items-center gap-3 group cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center group-hover:border-amber-300 transition-colors">
-                        <span class="material-icons-round text-gray-300 text-[20px]">image</span>
+                        <div class="text-right">
+                            <p class="text-sm font-black text-gray-950">₹{{ product.price }}</p>
+                            <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">{{ product.brand|truncatechars:10 }}</p>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="flex flex-col items-center justify-center py-20 text-center">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <span class="material-icons-round text-gray-200 text-3xl">inventory</span>
+                        </div>
+                        <p class="text-sm font-bold text-gray-400">No active inventory found</p>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold text-gray-900 truncate">Wireless Earbuds Pro</p>
-                        <p class="text-[10px] text-amber-500 font-semibold mt-0.5">11 sales today</p>
-                    </div>
-                    <p class="text-xs font-black text-gray-900">₹3,999</p>
+                    {% endfor %}
                 </div>
             </div>
-
-            <button class="w-full mt-5 py-3 bg-gray-50 hover:bg-gray-900 hover:text-white text-gray-700 text-xs font-black rounded-xl transition-all uppercase tracking-widest">
-                View All
-            </button>
         </div>
 
     </div>
 </div>
+
+<style>
+    /* Premium Scrollbar */
+    .overflow-y-auto::-webkit-scrollbar { width: 4px; }
+    .overflow-y-auto::-webkit-scrollbar-track { background: transparent; }
+    .overflow-y-auto::-webkit-scrollbar-thumb { background: #f3f4f6; border-radius: 10px; }
+    .overflow-y-auto::-webkit-scrollbar-thumb:hover { background: #e5e7eb; }
+</style>
 {% endblock %}

@@ -4,20 +4,28 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.core.files.storage import default_storage
 
+from customer.models import Order, OrderItem
+
 from .models import *
 from .forms import (
     ProductForm,
     ProductImageFormSet,
     VariantFormSet,
     AttributeOptionForm,
-    SellerProfileForm
+    SellerProfileForm,
+    SellerUserForm,
 )
 
 
 # ===================== SELLER HOME =====================
 @login_required(login_url='login')
 def seller_home_view(request):
-    seller_profile = get_object_or_404(SellerProfile, user=request.user)
+    try:
+        seller_profile = SellerProfile.objects.get(user=request.user)
+    except SellerProfile.DoesNotExist:
+        messages.error(request, 'No seller profile found for your account.')
+        return redirect('login')
+
     products = Product.objects.filter(seller=seller_profile)
 
     return render(request, 'seller_templates/homepage.html', {
@@ -156,10 +164,12 @@ def edit_product(request, slug):
 def sellerprofile(request):
     seller_profile = get_object_or_404(SellerProfile, user=request.user)
     products_count = Product.objects.filter(seller=seller_profile).count()
+    orders = OrderItem.objects.filter(seller=seller_profile).select_related("order", "variant__product").order_by("-order__ordered_at")
 
     return render(request, "seller_templates/seller_profile.html", {
         "seller": seller_profile,
         "products_count": products_count,
+        "orders": orders,
     })
 
 
@@ -169,17 +179,21 @@ def edit_seller_profile(request):
     seller = get_object_or_404(SellerProfile, user=request.user)
 
     if request.method == "POST":
-        form = SellerProfileForm(request.POST, instance=seller)
-        if form.is_valid():
-            form.save()
+        profile_form = SellerProfileForm(request.POST, request.FILES, instance=seller)
+        user_form = SellerUserForm(request.POST, instance=request.user)
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
+            user_form.save()
             messages.success(request, "Profile updated successfully")
             return redirect("sellerprofile")
     else:
-        form = SellerProfileForm(instance=seller)
+        profile_form = SellerProfileForm(instance=seller)
+        user_form = SellerUserForm(instance=request.user)
 
     return render(request, "seller_templates/profile_edit.html", {
-        "form": form,
-        "seller": seller
+        "profile_form": profile_form,
+        "user_form": user_form,
+        "seller": seller,
     })
 
 
@@ -195,10 +209,17 @@ def productlist(request):
     })
 
 
-# ===================== ORDERS =====================
-@login_required(login_url='login')
-def order_view(request):
-    return render(request, "seller_templates/order_view.html")
+# # ===================== ORDERS =====================
+@login_required
+def orderview(request):
+    orders = OrderItem.objects.filter(
+        seller__user=request.user
+    ).select_related("order", "order__user", "variant__product").order_by("-order__ordered_at")
+
+    return render(request, "seller_templates/order_view.html", {
+        "orders": orders
+    })
+    
 
 
 # ===================== LOGOUT =====================
@@ -211,3 +232,5 @@ def seller_logout(request):
 @login_required(login_url='login')
 def logout_confirm(request):
     return render(request, "seller_templates/logout_confirm.html")
+
+

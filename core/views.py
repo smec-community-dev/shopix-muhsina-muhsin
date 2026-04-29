@@ -245,11 +245,12 @@ def logout_view(request):
 
 def home_view(request):
     # Optimized Query: Fetch variants with their associated products and images in a single/few queries
-    products = ProductVariant.objects.select_related(
-        'product', 'product__subcategory'
-    ).prefetch_related(
-        'product__images'
-    ).filter(product__is_active=True).order_by('-created_at')[:20] # Limiting to 20 for homepage performance
+    # products = ProductVariant.objects.select_related(
+    #     'product', 'product__subcategory'
+    # ).prefetch_related(
+    #     'product__images'
+    # ).filter(product__is_active=True).order_by('-created_at')[:20] # Limiting to 20 for homepage performance
+    products=ProductVariant.objects.all()
 
     user_wishlist_ids = [] 
 
@@ -367,6 +368,15 @@ def core_product(request):
         context['data'] = request.user
     
     return render(request, 'core_templates/core_product.html', context)
+
+def contactus(request):
+    return render(request, 'core_templates/contact.html')
+
+def privacypolicy(request):
+    return render(request, 'core_templates/privacypolicy.html')
+
+def termsofservice(request):
+    return render(request, 'core_templates/terms.html')
 
 
 

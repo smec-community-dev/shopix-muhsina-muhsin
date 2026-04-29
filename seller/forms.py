@@ -134,31 +134,40 @@ class SellerProfileForm(forms.ModelForm):
     class Meta:
         model = SellerProfile
         fields = [
-            "store_name",
-            "store_slug",
-            "gst_number",
-            "pan_number",
-            "bank_account_number",
-            "ifsc_code",
-            "business_address"
+            "store_name", "store_slug", "business_address",
+            "gst_number", "pan_number",
+            "bank_account_number", "ifsc_code", "branch_name",
+            "document_1", "document_2",
         ]
-
         widgets = {
-            field: forms.TextInput(attrs={"class": input_classes})
-            for field in [
-                "store_name",
-                "store_slug",
-                "gst_number",
-                "pan_number",
-                "bank_account_number",
-                "ifsc_code"
-            ]
+            "store_name": forms.TextInput(attrs={"class": input_classes}),
+            "store_slug": forms.TextInput(attrs={"class": input_classes}),
+            "business_address": forms.Textarea(attrs={"class": input_classes, "rows": 3}),
+            "gst_number": forms.TextInput(attrs={"class": input_classes}),
+            "pan_number": forms.TextInput(attrs={"class": input_classes}),
+            "bank_account_number": forms.TextInput(attrs={"class": input_classes}),
+            "ifsc_code": forms.TextInput(attrs={"class": input_classes}),
+            "branch_name": forms.TextInput(attrs={"class": input_classes}),
+            "document_1": forms.ClearableFileInput(attrs={"class": input_classes}),
+            "document_2": forms.ClearableFileInput(attrs={"class": input_classes}),
         }
-
-        widgets["business_address"] = forms.Textarea(attrs={"class": input_classes})
 
     def clean_ifsc_code(self):
         ifsc = self.cleaned_data.get("ifsc_code")
         if ifsc and len(ifsc) < 8:
             raise forms.ValidationError("Invalid IFSC code")
         return ifsc
+
+
+# ================= USER FORM (for personal info) =================
+from django.contrib.auth import get_user_model
+
+class SellerUserForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ["first_name", "last_name", "phone_number"]
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": input_classes}),
+            "last_name": forms.TextInput(attrs={"class": input_classes}),
+            "phone_number": forms.TextInput(attrs={"class": input_classes}),
+        }

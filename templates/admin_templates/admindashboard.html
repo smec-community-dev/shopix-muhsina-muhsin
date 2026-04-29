@@ -2,99 +2,116 @@
 
 {% block content %}
 
-<!-- Dashboard Header -->
-
-<div class="mb-10">
-    <h1 class="text-3xl font-extrabold tracking-tighter text-gray-900 mb-1">Admin Dashboard</h1>
-    <p class="text-gray-500 text-sm">Real-time performance metrics for Precision Curator.</p>
+<div class="mb-12">
+    <h1 class="text-4xl font-black tracking-tight text-black mb-2">Admin Dashboard</h1>
+    <div class="flex items-center gap-2">
+        <span class="h-1 w-8 bg-amber-500"></span>
+        <p class="text-gray-600 text-sm uppercase tracking-widest font-medium">Precision Curator Performance</p>
+    </div>
 </div>
 
-<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
 
-<div class="grid grid-cols-12 gap-6">
-
-
-    <!-- Total Revenue -->
-    <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl p-8">
-        <p class="text-xs text-gray-400 mb-2">Total Gross Revenue</p>
-        <h2 class="text-5xl font-black text-gray-900 mb-6">$1,284,592</h2>
+    <div class="col-span-12 lg:col-span-8 bg-white border border-gray-100 rounded-2xl p-10 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-600 mb-3">Total Gross Revenue</p>
+        <h2 class="text-6xl font-black text-black mb-8">₹ 1245/-</h2>
 
         <div class="flex items-center gap-4">
-            <div class="bg-yellow-100 px-3 py-1 rounded-full text-xs font-bold text-yellow-700">
-                +12.4%
+            <div class="flex items-center bg-black px-4 py-1.5 rounded-full text-xs font-bold text-white">
+                <svg class="w-3 h-3 mr-1 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                </svg>
+                12.4%
             </div>
-            <p class="text-gray-400 text-xs">vs last 30 days</p>
+            <p class="text-gray-400 text-xs font-medium italic">vs. previous billing cycle</p>
         </div>
     </div>
 
-    <!-- Stats -->
     <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-        <div class="bg-white rounded-xl p-6">
-            <p class="text-xs text-gray-400">Active Sellers</p>
-            <h3 class="text-3xl font-bold">4,290</h3>
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex-1">
+            <p class="text-xs font-bold uppercase tracking-tighter text-gray-500 mb-1">Active Sellers</p>
+            <h3 class="text-4xl font-black text-black">{{ sellercount }}</h3>
+            <div class="mt-2 h-0.5 w-full bg-gray-50">
+                <div class="h-0.5 bg-amber-500 w-2/3"></div>
+            </div>
         </div>
 
-        <div class="bg-white rounded-xl p-6">
-            <p class="text-xs text-gray-400">Total Buyers</p>
-            <h3 class="text-3xl font-bold">82,104</h3>
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex-1">
+            <p class="text-xs font-bold uppercase tracking-tighter text-gray-500 mb-1">Total Buyers</p>
+            <h3 class="text-4xl font-black text-black">{{ customercount }}</h3>
+            <div class="mt-2 h-0.5 w-full bg-gray-50">
+                <div class="h-0.5 bg-black w-3/4"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Seller Table -->
-    <div class="col-span-12 lg:col-span-7 bg-white rounded-xl p-8">
-        <h3 class="text-lg font-bold mb-6">Top Performing Sellers</h3>
+    <div class="col-span-12 lg:col-span-7 bg-white border border-gray-100 rounded-2xl p-10 shadow-sm">
+        <div class="flex justify-between items-end mb-8">
+            <h3 class="text-xl font-black text-black">Top Performing Sellers</h3>
+            <span class="text-amber-600 text-xs font-bold border-b-2 border-amber-500 cursor-pointer">VIEW ALL</span>
+        </div>
 
         <table class="w-full text-left">
             <thead>
-                <tr class="text-gray-400 text-xs">
-                    <th>Store</th>
-                    <th>Category</th>
-                    <th>Status</th>
-                    <th class="text-right">Revenue</th>
+                <tr class="text-gray-400 text-[10px] uppercase tracking-widest border-b border-gray-50">
+                    <th class="pb-4 font-bold">Store</th>
+                    <th class="pb-4 font-bold">Category</th>
+                    <th class="pb-4 font-bold text-center">Status</th>
+                    <th class="pb-4 font-bold text-right">Revenue</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="py-3 font-semibold">Velvet & Vine</td>
-                    <td class="text-gray-500 text-sm">Luxury Goods</td>
-                    <td><span class="text-green-600 text-xs">Active</span></td>
-                    <td class="text-right">$42,900</td>
+            <tbody class="divide-y divide-gray-50">
+                <tr class="group">
+                    <td class="py-5 font-bold text-black group-hover:text-amber-600 transition-colors">Velvet & Vine</td>
+                    <td class="py-5 text-gray-500 text-sm">Luxury Goods</td>
+                    <td class="py-5 text-center">
+                        <span class="bg-green-50 text-green-700 text-[10px] font-black px-2 py-1 rounded">ACTIVE</span>
+                    </td>
+                    <td class="py-5 text-right font-mono font-bold text-black">$42,900</td>
                 </tr>
-            </tbody>
+                </tbody>
         </table>
     </div>
 
-    <!-- Buyer Activity -->
-    <div class="col-span-12 lg:col-span-5 bg-white rounded-xl p-8">
-        <h3 class="text-lg font-bold mb-6">Buyer Activity</h3>
-
-        <p class="text-sm">Recent activities will appear here</p>
+    <div class="col-span-12 lg:col-span-5 bg-black rounded-2xl p-10 shadow-xl">
+        <h3 class="text-xl font-black text-white mb-6">Recent Activity</h3>
+        <div class="space-y-6">
+            <div class="border-l-2 border-amber-500 pl-4">
+                <p class="text-white text-sm font-bold">New Boutique Onboarded</p>
+                <p class="text-gray-400 text-xs">2 minutes ago</p>
+            </div>
+            <div class="border-l-2 border-gray-700 pl-4">
+                <p class="text-white text-sm font-bold">High-Value Order: $4,200</p>
+                <p class="text-gray-400 text-xs">14 minutes ago</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Product Inventory -->
-    <div class="col-span-12 bg-white rounded-xl p-8">
-        <h3 class="text-lg font-bold mb-6">Product Inventory</h3>
+    <div class="col-span-12 bg-white border border-gray-100 rounded-2xl p-10 shadow-sm">
+        <h3 class="text-xl font-black text-black mb-8">Inventory Management</h3>
 
         <table class="w-full">
             <thead>
-                <tr class="text-xs text-gray-400">
-                    <th>SKU</th>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Stock</th>
+                <tr class="text-[10px] uppercase tracking-widest text-gray-400 border-b border-gray-50 text-left">
+                    <th class="pb-4">SKU Identification</th>
+                    <th class="pb-4">Product Name</th>
+                    <th class="pb-4">Unit Price</th>
+                    <th class="pb-4 text-right">Availability</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-50">
                 <tr>
-                    <td>#P-9021</td>
-                    <td>Eames Chair</td>
-                    <td>$899</td>
-                    <td>42</td>
+                    <td class="py-6 font-mono text-xs text-amber-600">#P-9021</td>
+                    <td class="py-6 font-bold text-black">Eames Lounge Chair & Ottoman</td>
+                    <td class="py-6 text-gray-600">$899.00</td>
+                    <td class="py-6 text-right">
+                        <span class="font-black text-lg">42</span>
+                        <span class="text-[10px] text-gray-400 ml-1 uppercase">units</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
-   
 
 </div>
 

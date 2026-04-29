@@ -5,384 +5,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ variant.product.name }} | Shopix Premium</title>
+    <title>{{ variant.product.name }} | Shopix Luxe</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
-            --color-dark: #343131;
-            --color-red: #A04747;
-            --color-gold: #D8A25E;
-            --color-cream: #EEDF7A;
+            --amber-primary: #f59e0b;
+            --black-primary: #000000;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f5f7;
-            color: var(--color-dark);
+            background-color: #ffffff;
+            color: var(--black-primary);
             -webkit-font-smoothing: antialiased;
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         .zoom-container img {
-            transition: transform 0.2s ease-out;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform;
         }
-        
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
-        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        .premium-border {
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-amber {
+            background-color: var(--amber-primary);
+            color: black;
+            transition: all 0.3s ease;
+        }
+
+        .btn-amber:hover {
+            background-color: #d97706;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
 <body class="flex flex-col min-h-screen">
 
-    <header class="bg-[#000] sticky top-0 z-50 shadow-md">
-        <div class="bg-[#343131] text-white py-2 px-6 text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">
-            <div class="max-w-[1600px] mx-auto flex justify-between items-center">
-                <span>Free Express Shipping on Orders Over ₹5000</span>
-                <div class="flex gap-6">
-                    <a href="{% url 'sellerregister' %}" class="text-[#EEDF7A] hover:brightness-110 transition">Sell on Shopix</a>
-                </div>
-            </div>
-        </div>
-        <div class="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
-            <a href="#" class="flex items-center gap-2 flex-shrink-0">
-                <img src="{% static 'images/shopix_logo.jpeg' %}" alt="Shopix Logo" class="h-12 md:h-16 w-auto object-contain rounded-sm">
+    <div
+        class="bg-black text-white py-2 px-6 text-[10px] font-bold uppercase tracking-[0.2em] text-center border-b border-amber-500/30">
+        Free Express Shipping on Orders Over ₹5000
+    </div>
+
+    <header class="bg-white sticky top-0 z-50 border-b premium-border">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#" class="flex-shrink-0">
+                <img src="{% static 'images/shopix_logo.jpeg' %}" alt="Shopix" class="h-10 w-auto">
             </a>
-            <div class="flex items-center gap-6 text-white">
-                <a href="{% url 'cart' %}" class="flex items-center hover:text-[#D8A25E] transition-colors relative p-2 group">
-                    <span class="material-icons text-3xl group-hover:scale-110 transition-transform">shopping_cart</span>
-                    <span class="absolute top-0 right-0 bg-[#EEDF7A] text-[#343131] text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center border-2 border-black">0</span>
+
+            <div class="flex items-center gap-8">
+                <a href="{% url 'sellerregister' %}"
+                    class="hidden md:block text-[11px] font-black uppercase tracking-widest hover:text-amber-500 transition">Sell
+                    on Shopix</a>
+                <a href="{% url 'cart' %}" class="relative group">
+                    <span
+                        class="material-icons-round text-2xl group-hover:text-amber-500 transition-colors">shopping_bag</span>
+                    <span
+                        class="absolute -top-1 -right-1 bg-black text-amber-500 text-[9px] font-black rounded-full h-4 w-4 flex items-center justify-center">0</span>
                 </a>
             </div>
         </div>
     </header>
 
-    {% if messages %}
-    <div id="toast-container" class="fixed top-24 right-4 z-50 flex flex-col gap-2 max-w-sm w-full">
-        {% for message in messages %}
-        <div class="toast-msg p-4 rounded-xl shadow-2xl flex items-start gap-3 border-l-4 transform transition-all duration-500 translate-x-0 opacity-100 {% if message.tags == 'error' %}bg-white border-red-500 text-red-700{% else %}bg-white border-green-500 text-green-700{% endif %}">
-            <span class="material-icons {% if message.tags == 'error' %}text-red-500{% else %}text-green-500{% endif %}">
-                {% if message.tags == 'error' %}error{% else %}check_circle{% endif %}
-            </span>
-            <p class="text-sm font-bold mt-0.5">{{ message }}</p>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+    <main class="max-w-[1400px] mx-auto w-full px-6 py-10 flex-grow">
 
-    <main class="max-w-[1600px] mx-auto w-full px-4 py-6 flex-grow">
-        
-        <nav class="text-xs font-bold text-gray-500 mb-6 flex items-center gap-2 uppercase tracking-wider">
-            <a href="#" class="hover:text-[#D8A25E] transition">Home</a>
-            <span class="material-icons" style="font-size: 14px;">chevron_right</span>
-            <span class="hover:text-[#D8A25E] cursor-pointer transition">{{ variant.product.subcategory.name }}</span>
-            <span class="material-icons" style="font-size: 14px;">chevron_right</span>
-            <span class="text-[#343131] truncate max-w-[200px] md:max-w-none">{{ variant.product.name }}</span>
+        <nav class="text-[10px] font-bold text-gray-400 mb-10 flex items-center gap-2 uppercase tracking-widest">
+            <a href="#" class="hover:text-black transition">Home</a>
+            <span class="text-gray-300">/</span>
+            <span class="hover:text-black cursor-pointer transition">{{ variant.product.subcategory.name }}</span>
+            <span class="text-gray-300">/</span>
+            <span class="text-black">{{ variant.product.name }}</span>
         </nav>
 
-        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-            
-            <div class="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4 sticky top-24">
-                
-                <div class="flex md:flex-col gap-3 overflow-auto no-scrollbar md:h-[600px] md:w-24 flex-shrink-0 pb-2 md:pb-0">
+        <div class="flex flex-col lg:flex-row gap-16 items-start">
+
+            <div class="w-full lg:w-[55%] flex flex-col-reverse md:flex-row gap-6">
+                <div class="flex md:flex-col gap-3 overflow-auto no-scrollbar md:w-20">
                     {% for img in variant.product.images.all %}
-                    <button class="w-20 h-20 md:w-full md:h-24 flex-shrink-0 bg-white border-2 border-gray-200 hover:border-[#D8A25E] rounded-xl overflow-hidden transition-all focus:outline-none focus:border-[#D8A25E]"
-                            onmouseover="changeMainImage('{{ img.image.url }}')" onclick="changeMainImage('{{ img.image.url }}')">
+                    <button
+                        class="w-20 h-20 flex-shrink-0 bg-white border premium-border hover:border-amber-500 rounded-lg overflow-hidden transition-all"
+                        onclick="changeMainImage('{{ img.image.url }}')">
                         <img src="{{ img.image.url }}" class="w-full h-full object-cover">
                     </button>
                     {% endfor %}
                 </div>
 
-                <div class="w-full bg-white border border-gray-200 rounded-2xl relative shadow-sm overflow-hidden h-[400px] md:h-[600px] group flex items-center justify-center zoom-container"
-                     onmousemove="zoomImage(event)" onmouseleave="resetZoom()">
-                    
-                    <div class="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+                <div class="w-full bg-white border premium-border rounded-2xl relative overflow-hidden aspect-square flex items-center justify-center zoom-container"
+                    onmousemove="zoomImage(event)" onmouseleave="resetZoom()">
+
+                    <div class="absolute top-6 left-6 z-10">
                         {% if variant.stock_quantity > 0 %}
-                        <span class="bg-green-100 text-green-700 border border-green-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
-                            In Stock
-                        </span>
-                        {% else %}
-                        <span class="bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
-                            Sold Out
-                        </span>
+                        <span
+                            class="bg-black text-amber-500 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-sm">In
+                            Stock</span>
                         {% endif %}
                     </div>
 
-                    <form action="{% url 'add_to_wishlist' variant.id %}" method="POST" class="absolute top-4 right-4 z-20">
-                        {% csrf_token %}
-                        <button type="submit" class="w-10 h-10 bg-white rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center shadow-md transition-all border border-gray-100 focus:outline-none">
-                            <span class="material-icons-round">favorite_border</span>
-                        </button>
-                    </form>
-
                     {% with variant.product.images.all|first as primary_img %}
-                        <img id="main-product-image" src="{{ primary_img.image.url }}" alt="{{ variant.product.name }}" 
-                             class="w-full h-full object-contain p-8 cursor-crosshair">
+                    <img id="main-product-image" src="{{ primary_img.image.url }}" alt="{{ variant.product.name }}"
+                        class="w-full h-full object-contain p-12">
                     {% endwith %}
                 </div>
             </div>
 
-            <div class="w-full lg:w-1/2 flex flex-col gap-6">
-                
-                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <p class="text-xs font-black uppercase tracking-widest text-[#D8A25E] mb-2">
+            <div class="w-full lg:w-[45%]">
+                <div class="mb-8">
+                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-amber-600 mb-3">
                         {{ variant.product.brand }}
                     </p>
-                    <h1 class="text-3xl md:text-4xl font-black text-[#343131] tracking-tight leading-tight mb-4">
+                    <h1 class="text-4xl font-extrabold text-black tracking-tighter leading-none mb-6">
                         {{ variant.product.name }}
                     </h1>
-                    
-                    <div class="flex flex-wrap items-center gap-4 border-b border-gray-100 pb-6 mb-6">
-                        {% if reviews %}
-                        <div class="flex items-center gap-2">
-                            <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-sm">
-                                {{ avg_rating }} <span class="material-icons" style="font-size: 12px;">star</span>
-                            </span>
-                            <a href="#reviews-section" class="text-sm font-semibold text-blue-600 hover:underline">{{ reviews.count }} Ratings & Reviews</a>
+
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="flex items-center bg-black text-amber-500 px-2 py-1 rounded-sm text-xs font-black">
+                            {{ avg_rating|default:"5.0" }} <span class="material-icons-round ml-1"
+                                style="font-size: 14px;">star</span>
                         </div>
-                        <span class="text-gray-300">|</span>
-                        {% endif %}
-                        <p class="text-gray-500 text-xs font-bold tracking-widest">SKU: {{ variant.sku_code }}</p>
+                        <span class="text-gray-300 text-xs font-bold uppercase tracking-widest">SKU: {{ variant.sku_code }}</span>
                     </div>
 
-                    <div class="flex items-end gap-4 mb-2">
-                        <span class="text-4xl md:text-5xl font-black text-[#343131] tracking-tighter">₹{{ variant.selling_price }}</span>
-                        <div class="flex flex-col mb-1">
-                            <span class="text-sm text-gray-400 line-through font-bold">MRP: ₹{{ variant.mrp }}</span>
-                            <span class="text-green-600 text-sm font-black">Special Price</span>
-                        </div>
+                    <div class="flex items-baseline gap-4 mb-10">
+                        <span class="text-5xl font-black tracking-tighter">₹{{ variant.selling_price }}</span>
+                        <span class="text-lg text-gray-400 line-through decoration-amber-500/50">₹{{ variant.mrp }}</span>
                     </div>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                        <a href="{% url 'add_to_cart' variant.id %}" class="flex-1 bg-white border-2 border-[#343131] text-[#343131] hover:bg-gray-50 py-4 px-6 rounded-xl font-black text-center transition-all uppercase tracking-widest flex items-center justify-center gap-2 focus:outline-none focus:ring-4 focus:ring-gray-200">
-                            <span class="material-icons">add_shopping_cart</span> Add to Cart
+
+                    <div class="flex flex-col gap-4">
+                        <a href="{% url 'add_to_cart' variant.id %}"
+                            class="w-full bg-black text-white py-5 rounded-full font-black text-center uppercase tracking-widest text-xs hover:bg-zinc-800 transition-all flex items-center justify-center gap-3">
+                            <span class="material-icons-round text-lg">shopping_bag</span> Add to Cart
                         </a>
-                        
-                        <a href="{% url 'order' variant.id %}" class="flex-1 bg-[#A04747] hover:bg-[#8a3c3c] text-white py-4 px-6 rounded-xl font-black text-center transition-all uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-red-900/20 focus:outline-none focus:ring-4 focus:ring-red-200">
-                            <span class="material-icons">flash_on</span> Buy Now
+
+                        <a href="{% url 'order' variant.id %}"
+                            class="w-full btn-amber py-5 rounded-full font-black text-center uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-xl shadow-amber-500/10">
+                            <span class="material-icons-round text-lg">bolt</span> Express Checkout
                         </a>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="flex flex-col items-center justify-center text-center p-2">
-                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-2">
-                            <span class="material-icons text-blue-600 text-xl">local_shipping</span>
+                <div class="grid grid-cols-2 gap-4 border-t premium-border pt-8 mt-8">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
+                            <span class="material-icons-round text-amber-600 text-sm">published_with_changes</span>
                         </div>
-                        <p class="text-[10px] font-black uppercase text-gray-600">Free Delivery</p>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">{{ variant.product.return_days }} Day Returns</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center text-center p-2">
-                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center mb-2">
-                            <span class="material-icons text-green-600 text-xl">history</span>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
+                            <span class="material-icons-round text-amber-600 text-sm">verified</span>
                         </div>
-                        <p class="text-[10px] font-black uppercase text-gray-600">{{ variant.product.return_days }} Day Return</p>
-                    </div>
-                    <div class="flex flex-col items-center justify-center text-center p-2">
-                        <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mb-2">
-                            <span class="material-icons text-purple-600 text-xl">verified</span>
-                        </div>
-                        <p class="text-[10px] font-black uppercase text-gray-600">100% Authentic</p>
-                    </div>
-                    <div class="flex flex-col items-center justify-center text-center p-2">
-                        <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center mb-2">
-                            <span class="material-icons text-yellow-600 text-xl">security</span>
-                        </div>
-                        <p class="text-[10px] font-black uppercase text-gray-600">Secure Pay</p>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Genuine Product</span>
                     </div>
                 </div>
-
-                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-lg font-black text-[#343131] border-b border-gray-100 pb-4 mb-4">Product Specifications</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                        <div class="flex flex-col border-b border-gray-50 pb-2">
-                            <span class="text-xs text-gray-500 font-semibold mb-1">Model Number</span>
-                            <span class="text-sm font-bold text-[#343131]">{{ variant.product.model_number }}</span>
-                        </div>
-                        <div class="flex flex-col border-b border-gray-50 pb-2">
-                            <span class="text-xs text-gray-500 font-semibold mb-1">Dimensions</span>
-                            <span class="text-sm font-bold text-[#343131]">{{ variant.length }} x {{ variant.width }} x {{ variant.height }} cm</span>
-                        </div>
-                        <div class="flex flex-col border-b border-gray-50 pb-2 md:col-span-2">
-                            <span class="text-xs text-gray-500 font-semibold mb-1">Category</span>
-                            <span class="text-sm font-bold text-[#343131]">{{ variant.product.subcategory.category.name }} > {{ variant.product.subcategory.name }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 pt-6 border-t border-gray-100">
-                        <h4 class="text-sm font-black text-[#343131] mb-2">Description</h4>
-                        <p class="text-sm text-gray-600 leading-relaxed">
-                            {{ variant.product.description }}
-                        </p>
-                    </div>
-                </div>
-
             </div>
         </div>
 
-        <div id="reviews-section" class="mt-12 pt-12 border-t border-gray-200">
-            <h2 class="text-2xl md:text-3xl font-black text-[#343131] tracking-tight mb-8">Ratings & Reviews</h2>
-            
-            <div class="flex flex-col lg:flex-row gap-8">
-                
-                <div class="w-full lg:w-1/3">
-                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
-                        <h3 class="text-lg font-black text-[#343131] mb-6">Write a Review</h3>
-                        
-                        {% if user.is_authenticated %}
-                        <form action="{% url 'add_review' variant.product.id %}" method="POST">
-                            {% csrf_token %}
-                            
-                            <div class="mb-5">
-                                <label class="block text-xs font-bold text-gray-700 mb-2">Rate this product</label>
-                                <select name="rating" required class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-[#D8A25E] focus:ring-1 focus:ring-[#D8A25E] bg-white text-sm font-semibold cursor-pointer">
-                                    <option value="" disabled selected>Select a rating...</option>
-                                    <option value="5">5 Stars - Excellent</option>
-                                    <option value="4">4 Stars - Very Good</option>
-                                    <option value="3">3 Stars - Average</option>
-                                    <option value="2">2 Stars - Poor</option>
-                                    <option value="1">1 Star - Terrible</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-xs font-bold text-gray-700 mb-2">Detailed Review</label>
-                                <textarea name="comment" rows="4" required placeholder="What did you like or dislike? How is the quality?" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-[#D8A25E] focus:ring-1 focus:ring-[#D8A25E] text-sm resize-none"></textarea>
-                            </div>
-
-                            <button type="submit" class="w-full bg-[#343131] hover:bg-black text-white py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2">
-                                Submit Review
-                            </button>
-                        </form>
-                        {% else %}
-                        <div class="text-center py-8">
-                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span class="material-icons text-gray-400 text-3xl">lock</span>
-                            </div>
-                            <p class="text-sm font-medium text-gray-600 mb-6">Please log in to share your thoughts.</p>
-                            <a href="{% url 'login' %}" class="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition-colors">Login to Review</a>
-                        </div>
-                        {% endif %}
-                    </div>
+        <section class="mt-24 max-w-4xl">
+            <h3 class="text-xl font-black uppercase tracking-widest mb-10 pb-4 border-b-2 border-black inline-block">
+                Product Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-6 mb-12">
+                <div class="flex justify-between border-b premium-border pb-4">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase">Model</span>
+                    <span class="text-[11px] font-black">{{ variant.product.model_number }}</span>
                 </div>
-
-                <div class="w-full lg:w-2/3">
-                    <div class="space-y-4">
-                        {% if reviews %}
-                            {% for review in reviews %}
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center text-gray-600 font-black text-sm border border-gray-300">
-                                            {{ review.user.username|make_list|first|upper }}
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-[#343131] text-sm">{{ review.user.username }}</h4>
-                                            <div class="flex items-center gap-2 mt-0.5">
-                                                
-                                                <div class="flex items-center text-[#D8A25E] text-xs">
-                                                    <span class="font-bold text-[#343131] mr-1">{{ review.rating }}</span>
-                                                    {% for i in "12345"|make_list %}
-                                                        {% if forloop.counter <= review.rating %}
-                                                            <span class="material-icons" style="font-size: 14px;">star</span>
-                                                        {% else %}
-                                                            <span class="material-icons text-gray-300" style="font-size: 14px;">star_border</span>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                
-                                                <span class="text-xs text-gray-400 font-medium">{{ review.created_at|timesince }} ago</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <span class="hidden sm:flex items-center gap-1 text-[10px] font-bold text-gray-500 bg-gray-50 px-2 py-1 rounded uppercase">
-                                        <span class="material-icons text-green-500" style="font-size: 12px;">verified</span> Verified
-                                    </span>
-                                </div>
-                                <p class="text-gray-700 text-sm mt-3">
-                                    {{ review.comment }}
-                                </p>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="text-center py-20 bg-white rounded-2xl border border-gray-100 border-dashed">
-                                <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <span class="material-icons-round text-gray-300 text-4xl">rate_review</span>
-                                </div>
-                                <h4 class="font-black text-[#343131] text-lg mb-2">No Reviews Yet</h4>
-                                <p class="text-gray-500 text-sm max-w-sm mx-auto">Be the first to review {{ variant.product.name }} and help other shoppers make a decision!</p>
-                            </div>
-                        {% endif %}
-                    </div>
+                <div class="flex justify-between border-b premium-border pb-4">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase">Dimensions</span>
+                    <span class="text-[11px] font-black">{{ variant.length }}x{{ variant.width }}x{{ variant.height }}
+                        cm</span>
                 </div>
-
             </div>
-        </div>
+            <p class="text-sm text-gray-600 leading-loose">
+                {{ variant.product.description }}
+            </p>
+        </section>
 
     </main>
-    
-    <footer class="bg-[#343131] text-white mt-10">
-        <div class="bg-[#242222] hover:bg-[#1a1818] text-center py-4 cursor-pointer transition-colors" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <span class="font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2">
-                <span class="material-icons">arrow_upward</span> Back to top
-            </span>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
-            <div class="text-[10px] text-gray-500 font-black uppercase tracking-[0.5em]">
-                &copy; 2026 SHOPIX ONLINE STORE. NO COMPROMISE.
+
+    <footer class="bg-black text-white pt-20 pb-10">
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div
+                class="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-zinc-800 pb-12 mb-10">
+                <img src="{% static 'images/shopix_logo.jpeg' %}" alt="Shopix Logo" class="h-8 invert brightness-0">
+                <div class="flex gap-10">
+                    <a href="#"
+                        class="text-[10px] font-black uppercase tracking-widest hover:text-amber-500">Instagram</a>
+                    <a href="#"
+                        class="text-[10px] font-black uppercase tracking-widest hover:text-amber-500">Support</a>
+                </div>
             </div>
+            <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.4em] text-center">
+                &copy; 2026 SHOPIX ONLINE STORE. DEFINING PREMIUM.
+            </p>
         </div>
     </footer>
 
     <script>
         function changeMainImage(url) {
             const mainImg = document.getElementById('main-product-image');
-            mainImg.style.opacity = '0.5';
+            mainImg.style.opacity = '0';
             setTimeout(() => {
                 mainImg.src = url;
                 mainImg.style.opacity = '1';
-            }, 50);
+            }, 200);
         }
 
         function zoomImage(e) {
             const container = e.currentTarget;
             const img = document.getElementById('main-product-image');
-            
             const { left, top, width, height } = container.getBoundingClientRect();
-            
             const x = ((e.clientX - left) / width) * 100;
             const y = ((e.clientY - top) / height) * 100;
-            
             img.style.transformOrigin = `${x}% ${y}%`;
-            img.style.transform = 'scale(2)';
+            img.style.transform = 'scale(1.8)';
         }
 
         function resetZoom() {
             const img = document.getElementById('main-product-image');
-            img.style.transformOrigin = 'center center';
             img.style.transform = 'scale(1)';
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const toasts = document.querySelectorAll('.toast-msg');
-            if (toasts.length > 0) {
-                setTimeout(() => {
-                    toasts.forEach(toast => {
-                        toast.classList.remove('opacity-100');
-                        toast.classList.add('opacity-0', 'translate-x-full');
-                        setTimeout(() => toast.remove(), 500); 
-                    });
-                }, 5000); 
-            }
-        });
     </script>
 </body>
+
 </html>
