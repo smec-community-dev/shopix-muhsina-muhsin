@@ -82,7 +82,7 @@
                 <span>Registered Products</span>
             </a>
             <a href="{% url 'categorymanagement' %}" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition
-   {% if request.resolver_match.url_name == 'productlisting' %}
+   {% if request.resolver_match.url_name == 'categorymanagement' %}
        text-amber-700 bg-amber-100
    {% else %}
        text-black-500 hover:bg-black-100
