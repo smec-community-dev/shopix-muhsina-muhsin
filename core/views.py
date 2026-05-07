@@ -22,6 +22,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import PasswordResetView
 
 User = get_user_model()
 
@@ -377,6 +379,28 @@ def privacypolicy(request):
 
 def termsofservice(request):
     return render(request, 'core_templates/terms.html')
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = 'core_templates/password_reset_form.html'
+    email_template_name = 'core_templates/password_reset_email.html'
+    subject_template_name = 'core_templates/password_reset_subject.txt'
+    success_url = '/password-reset/done/'
+
+    def form_valid(self, form):
+        email = form.cleaned_data.get('email')
+
+        active_users = User.objects.filter(
+            email=email,
+            is_active=True,
+            is_staff=False,
+            is_superuser=False
+        )
+
+        if active_users.exists():
+            form.get_users = lambda email: active_users
+
+        return super().form_valid(form)
 
 
 
