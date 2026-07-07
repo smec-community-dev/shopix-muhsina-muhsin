@@ -1,1 +1,3 @@
+SHOPIX ECOMMERCE PLATFORM
+
 A full-stack e-commerce platform built with Django, MySQL, and Tailwind CSS. Features secure authentication, product and category management, shopping cart, order processing, AWS S3 file storage, and a responsive admin and customer interface for seamless online shopping.
